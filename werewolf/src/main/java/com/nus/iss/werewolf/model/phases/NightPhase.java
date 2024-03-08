@@ -1,10 +1,16 @@
 package com.nus.iss.werewolf.model.phases;
 
-public class NightPhase implements Phase {
+import com.nus.iss.werewolf.model.Game;
+
+public class NightPhase extends Phase {
+
+    public NightPhase(Game game) {
+        super(game, PhaseType.NIGHT);
+    }
 
     @Override
     public void execute() {
-        System.out.println("Night Phase");
+        System.out.println("\tNight Phase");
     }
-    
+
 }

@@ -15,6 +15,7 @@ import com.nus.iss.werewolf.model.Role;
 import com.nus.iss.werewolf.model.phases.DayPhase;
 import com.nus.iss.werewolf.model.phases.NightPhase;
 import com.nus.iss.werewolf.model.phases.Phase;
+import com.nus.iss.werewolf.model.phases.PhaseType;
 import com.nus.iss.werewolf.service.GameFactory;
 import com.nus.iss.werewolf.service.GameService;
 import com.nus.iss.werewolf.service.LobbyService;
@@ -44,10 +45,12 @@ public class WerewolfApplication implements CommandLineRunner {
 		ArrayList<Player> players = new ArrayList<>(List.of(
 			new Player("Bobby"),
 			new Player("John"),
-			new Player("Jopie")
+			new Player("Jopie"),
+			new Player("Jookoon"),
+			new Player("Blop"),
+			new Player("Poopie")
 		));
 		lobbySvc.addPlayers(players, game);
-
 
 		// Assign Roles
 		roleSvc.assignRoles(game);

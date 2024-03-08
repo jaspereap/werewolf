@@ -33,18 +33,25 @@ public class GameService {
             log.info("\n\tGame Started!");
             do {
                 for (Phase p : game.getPhases()) {
-                    log.info("\n\tCurrent Phase: " + p);
+                    p.execute();
                     counter -= 1;
-                    List<Player> aliveVillagers = game.getAlivePlayersByRole(Role.VILLAGER);
-                    List<Player> aliveWerewolves = game.getAlivePlayersByRole(Role.WEREWOLF);
-                    System.out.println("Alive villagers: " + aliveVillagers);
-                    System.out.println("Alive Werewolves: " + aliveWerewolves);
-                    System.out.println("Are villagers dead? " + game.isAllVillagersDead());
-                    System.out.println("Are werewolves dead? " + game.isAllWerewolvesDead());
+                    game.getAlivePlayers().getFirst().killPlayer();
+                    // List<Player> aliveVillagers = game.getAlivePlayersByRole(Role.VILLAGER);
+                    // List<Player> aliveWerewolves = game.getAlivePlayersByRole(Role.WEREWOLF);
+                    // System.out.println("\t\tAlive villagers: " + aliveVillagers + "\n");
+                    // System.out.println("\t\tAlive Werewolves: " + aliveWerewolves + "\n");
+                    // System.out.println("Are villagers dead? " + game.isAllVillagersDead());
+                    // System.out.println("Are werewolves dead? " + game.isAllWerewolvesDead());
+
+                    System.out.println("Phase: " + p.getPhase());
+                    System.out.println("Game: " + p.getGame());
                     System.out.println("Is Game over? " + game.isGameOver());
- 
+                    
+                    if (game.isGameOver()) {
+                        break;
+                    }
                 }
-            } while (counter > 0); // GameOver condition
+            } while (!game.isGameOver());
         });
     }
 

@@ -12,4 +12,9 @@ public class Player {
         this.name = name;
         this.state = PlayerState.ALIVE;
     }
+
+    public void killPlayer() {
+        this.state = PlayerState.DEAD;
+        System.out.println("\t" + name + " has been killed!" + " (" + role + ")");
+    }
 }

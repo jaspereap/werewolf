@@ -19,6 +19,12 @@ public class Game {
     private ArrayList<Player> players;
     private GameState gameState;
 
+    public Game(String name, ArrayList<Player> players, GameState gameState) {
+        this.name = name;
+        this.players = players;
+        this.gameState = gameState;
+    }
+
     public List<Player> getAlivePlayers() {
         return players.stream()
                       .filter(player -> player.getState() == PlayerState.ALIVE)
