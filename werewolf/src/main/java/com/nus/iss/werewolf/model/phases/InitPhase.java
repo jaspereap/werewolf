@@ -12,7 +12,7 @@ public class InitPhase extends Phase{
     public void execute() {
         System.out.println("\tInit Phase");
         game.getAlivePlayers().forEach(p -> {System.out.println("\t" + p.getName() + " : " + p.getRole());});
-        isActive = false;
+        isActivated = false;
     }
 
 }

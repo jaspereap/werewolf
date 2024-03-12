@@ -1,0 +1,3 @@
+interface SampleMessage {
+    message: string;
+}

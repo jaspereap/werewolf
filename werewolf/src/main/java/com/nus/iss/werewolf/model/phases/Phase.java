@@ -6,12 +6,12 @@ public abstract class Phase {
     public abstract void execute();
     protected Game game;
     protected PhaseType phaseType;
-    protected boolean isActive;
+    protected boolean isActivated;
     
-    public Phase(Game game, PhaseType phaseType, boolean active) {
+    public Phase(Game game, PhaseType phaseType, boolean activated) {
         this.game = game;
         this.phaseType = phaseType;
-        this.isActive = active;
+        this.isActivated = activated;
     }
     
     public Game getGame() {
@@ -22,8 +22,8 @@ public abstract class Phase {
         return this.phaseType;
     };
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isActivated() {
+        return isActivated;
     }
     
 }

@@ -38,26 +38,26 @@ public class WerewolfApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// Create and initialise game
-		Game game = GameFactory.initGame("Test Game", "bob");
+		// // Create and initialise game
+		// Game game = GameFactory.initGame("Test Game", "bob");
 
-		// Add players
-		ArrayList<Player> players = new ArrayList<>(List.of(
-			new Player("Bobby"),
-			new Player("John"),
-			new Player("Jopie"),
-			new Player("Jookoon"),
-			new Player("Blop"),
-			new Player("Poopie")
-		));
-		lobbySvc.addPlayers(players, game);
+		// // Add players
+		// ArrayList<Player> players = new ArrayList<>(List.of(
+		// 	new Player("Bobby"),
+		// 	new Player("John"),
+		// 	new Player("Jopie"),
+		// 	new Player("Jookoon"),
+		// 	new Player("Blop"),
+		// 	new Player("Poopie")
+		// ));
+		// lobbySvc.addPlayers(players, game);
 
-		// Assign Roles
-		roleSvc.assignRoles(game);
-		log.info(game.toString());
+		// // Assign Roles
+		// roleSvc.assignRoles(game);
+		// log.info(game.toString());
 		
-		// Start game
-		gameSvc.startGame(game);
+		// // Start game
+		// gameSvc.startGame(game);
 	}
 
 }

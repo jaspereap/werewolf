@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.nus.iss.werewolf.model.Game;
@@ -17,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class GameService {    
-    @Autowired
-    Executor executor;
+    @Autowired @Qualifier("executor")
+    private Executor executor;
 
     // public GameService(Executor executor) {
     //     this.executor = executor;
@@ -31,15 +32,15 @@ public class GameService {
             log.info("\n\tGame Started!");
             do {
                 for (Phase p : game.getPhases()) {
-                    if (p.isActive()) {
+                    if (p.isActivated()) {
                         p.execute();
-                        // Mocking
+                        // Mocking ------
                         if (p.getPhase() == PhaseType.EXECUTION) {
                             // game.getAlivePlayers().getFirst().killPlayer()
                         } else if (p.getPhase() == PhaseType.WEREWOLF) {
                             game.getAlivePlayersByRole(Role.VILLAGER).getFirst().killPlayer();
                         }
-                        //
+                        // -------
                         List<Player> aliveVillagers = game.getAlivePlayersByRole(Role.VILLAGER);
                         List<Player> aliveWerewolves = game.getAlivePlayersByRole(Role.WEREWOLF);
                         System.out.println("\t\tAlive villagers: " + aliveVillagers + "\n");
