@@ -1,22 +1,10 @@
 package com.nus.iss.werewolf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.nus.iss.werewolf.model.Game;
-import com.nus.iss.werewolf.model.Player;
-import com.nus.iss.werewolf.model.PlayerState;
-import com.nus.iss.werewolf.model.Role;
-import com.nus.iss.werewolf.model.phases.DayPhase;
-import com.nus.iss.werewolf.model.phases.NightPhase;
-import com.nus.iss.werewolf.model.phases.Phase;
-import com.nus.iss.werewolf.model.phases.PhaseType;
-import com.nus.iss.werewolf.service.GameFactory;
 import com.nus.iss.werewolf.service.GameService;
 import com.nus.iss.werewolf.service.LobbyService;
 import com.nus.iss.werewolf.service.RoleService;

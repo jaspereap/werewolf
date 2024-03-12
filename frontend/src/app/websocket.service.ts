@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 @Injectable()
-export class WebsocketService {
+export class WebSocketService {
   private subject: WebSocketSubject<any>;
   
   constructor() { 
@@ -13,15 +13,15 @@ export class WebsocketService {
     this.subject = new WebSocketSubject('ws://localhost:8080/ws')
     return this.subject;
   }
-  send(message:any) {
+  sendMessage(message:any) {
     const sampleMessage: SampleMessage = {
       message: message
     }
     this.subject.next(sampleMessage);
   }
 
-  getSubject() {
-    return this.subject;
+  getMessage() {
+    return this.subject.asObservable();
   }
 }
 

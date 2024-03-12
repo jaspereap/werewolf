@@ -1,10 +1,13 @@
 package com.nus.iss.werewolf.model.messages;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class SampleMessage {
-    String message;
+    private String message;
+    public SampleMessage(String message) {
+        this.message = message;
+    }
 }

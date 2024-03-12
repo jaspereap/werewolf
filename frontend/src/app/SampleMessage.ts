@@ -1,3 +1,3 @@
-interface SampleMessage {
+export interface SampleMessage {
     message: string;
 }
