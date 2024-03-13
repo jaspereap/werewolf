@@ -19,7 +19,7 @@ public class RoleService {
     Random random = new Random();
 
     public void assignRoles(Game game) {
-        log.info("\n\tAssigning roles to players...");
+        log.debug("\n\tAssigning roles to players...");
         ArrayList<Player> players = game.getPlayers();
         int playerCount = players.size();
         int werewolfCount = 2;

@@ -27,7 +27,6 @@ public class GameService {
 
     public void startGame(Game game) {
         executor.execute(() -> {
-
             // Game initialization logic
             log.info("\n\tGame Started!");
             do {

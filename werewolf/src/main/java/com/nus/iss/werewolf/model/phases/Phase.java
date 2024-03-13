@@ -2,6 +2,9 @@ package com.nus.iss.werewolf.model.phases;
 
 import com.nus.iss.werewolf.model.Game;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+
 public abstract class Phase {
     public abstract void execute();
     protected Game game;
@@ -25,5 +28,4 @@ public abstract class Phase {
     public boolean isActivated() {
         return isActivated;
     }
-    
 }

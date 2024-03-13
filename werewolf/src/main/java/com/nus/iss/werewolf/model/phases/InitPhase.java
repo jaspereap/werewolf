@@ -11,6 +11,7 @@ public class InitPhase extends Phase{
     @Override
     public void execute() {
         System.out.println("\tInit Phase");
+        
         game.getAlivePlayers().forEach(p -> {System.out.println("\t" + p.getName() + " : " + p.getRole());});
         isActivated = false;
     }

@@ -5,13 +5,14 @@ import { AppComponent } from './app.component';
 import { WebSocketService } from './websocket.service';
 import { RxStompService } from './rx-stomp.service';
 import { rxStompServiceFactory } from './rx-stomp-service-factory';
-import { MainGameComponent } from './main-game/main-game.component';
+import { GameComponent } from './game/game.component';
 import { TestComponent } from './test/test.component';
+import { MessageService } from './message.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainGameComponent,
+    GameComponent,
     TestComponent
   ],
   imports: [
@@ -20,6 +21,7 @@ import { TestComponent } from './test/test.component';
   ],
   providers: [
     WebSocketService,
+    MessageService,
     {
       provide: RxStompService,
       useFactory: rxStompServiceFactory

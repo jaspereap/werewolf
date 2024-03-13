@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.nus.iss.werewolf.service.GameService;
 import com.nus.iss.werewolf.service.LobbyService;
+import com.nus.iss.werewolf.service.MessageService;
 import com.nus.iss.werewolf.service.RoleService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ public class WerewolfApplication implements CommandLineRunner {
 	RoleService roleSvc;
 	@Autowired
 	LobbyService lobbySvc;
+	@Autowired
+	MessageService msgSvc;
 	public static void main(String[] args) {
 		SpringApplication.run(WerewolfApplication.class, args);
 	}
@@ -46,6 +49,7 @@ public class WerewolfApplication implements CommandLineRunner {
 		
 		// // Start game
 		// gameSvc.startGame(game);
+
 	}
 
 }
