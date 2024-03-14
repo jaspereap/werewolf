@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Game {
-    String name;
+    String gameName;
     private List<Phase> phases;
     private ArrayList<Player> players;
     private GameState gameState;
 
     public Game(String name, ArrayList<Player> players, GameState gameState) {
-        this.name = name;
+        this.gameName = name;
         this.players = players;
         this.gameState = gameState;
     }
@@ -68,7 +68,7 @@ public class Game {
             phasesArrayBuilder.add(phase.getPhase().toString());
         }
         return Json.createObjectBuilder()
-            .add("name", name)
+            .add("name", gameName)
             .add("phases", phasesArrayBuilder)
             .add("players", playersArrayBuilder)
             .add("gameState", gameState.toString())

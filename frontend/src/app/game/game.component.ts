@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameState, PhaseType, Player, PlayerState, Role } from '../dtos';
-import { GameComponentState, GameStore } from './game.store';
+import { GameStore } from './game.store';
 import { provideComponentStore } from '@ngrx/component-store';
 import { GameService } from '../game.service';
 import { Observable } from 'rxjs';
@@ -12,10 +12,9 @@ import { Observable } from 'rxjs';
   providers: [provideComponentStore(GameStore)]
 })
 export class GameComponent implements OnInit {
+  currentPlayer!: Player;
   
   vm$ = this.gameStore.vm$;
-
-  currentPlayer!: Player;
   gameName!: string;
   gameState!: GameState;
   players!: Player[];
@@ -25,9 +24,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Main Game Initialised!');
-    // Override initial state
-    this.gameStore.setGameName('testGame');
-    this.gameStore.setCurrentPlayer({ name: 'bob', state: PlayerState.ALIVE, role: Role.VILLAGER } as Player);
+    this.currentPlayer = { name: 'bob', state: PlayerState.ALIVE, role: undefined } as Player;
 
     // Subscribe to component store observable, update state
     this.vm$.subscribe(
@@ -36,11 +33,11 @@ export class GameComponent implements OnInit {
         this.currentPhase = state.currentPhase;
         this.gameState = state.gameState;
         this.players = state.players;
-        this.currentPlayer = state.currentPlayer
+        // this.currentPlayer = state.currentPlayer
       }
     )
     // Subscribe to server for game updates
-    this.gameSvc.subGame(this.gameName, this.currentPlayer.name);
+    this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.name);
   }
 
   setPhaseButton() {

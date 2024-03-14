@@ -1,0 +1,17 @@
+<p>game-list works!</p>
+<div *ngIf="games">
+    <table border="1">
+        <tr>
+            <td>No.</td>
+            <td>Game Name</td>
+            <td>Game Status</td>
+            <td>Players</td>
+        </tr>
+        <tr *ngFor="let game of games; let i = index;">
+            <td>{{i}}</td>
+            <td>{{game.gameName}}</td>
+            <td>{{game.gameState}}</td>
+            <td>{{game.players.length}}</td>
+        </tr>
+    </table>
+</div>

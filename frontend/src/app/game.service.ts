@@ -10,8 +10,7 @@ export class GameService {
 
   constructor(private messageSvc: MessageService) { }
     // Fetch game
-    subGame(gameName: string, playerName: string) {
-      
+    subscribeGame(gameName: string, playerName: string) {
       this.messageSvc.subscribeToGame(gameName).subscribe(
           (msg: Message) => {
               this.messageSvc.publishAck(gameName, playerName); // Send ack

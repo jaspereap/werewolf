@@ -1,0 +1,9 @@
+<h1>Lobby</h1>
+<app-game-list [games]="games"></app-game-list>
+
+<h3>Create Room</h3>
+<form [formGroup]="newRoomForm">
+    <input type="text" formControlName="currentPlayerName" placeholder="currentPlayerName">
+    <input type="text" formControlName="gameName" placeholder="gameName">
+    <button (click)="processNewRoom()">Create Game</button>
+</form>

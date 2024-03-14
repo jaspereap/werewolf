@@ -2,9 +2,11 @@ package com.nus.iss.werewolf.model.phases;
 
 import com.nus.iss.werewolf.model.Game;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public abstract class Phase {
     public abstract void execute();
     protected Game game;

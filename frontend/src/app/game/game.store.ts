@@ -1,28 +1,21 @@
 import { ComponentStore, OnStoreInit } from "@ngrx/component-store";
-import { GameState, PhaseType, Player, PlayerState, Role } from "../dtos";
+import { GameComponentState, GameState, PhaseType, Player, PlayerState, Role } from "../dtos";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-
-export interface GameComponentState {
-    currentPlayer: Player;
-    gameName: string;
-    gameState: GameState;
-    players: Player[];
-    currentPhase: PhaseType;
-}
+import { tap } from "rxjs";
 
 @Injectable()
 export class GameStore extends ComponentStore<GameComponentState> implements OnStoreInit {
     // Read values from state
     // Defining Observable using select operator -> emits values whenever selected state changes in store.
-    private currentPlayer$ = this.select((state) => state.currentPlayer)
-    private gameName$ = this.select((state) => state.gameName)
-    private gameState$ = this.select((state) => state.gameState)
-    private players$ = this.select((state) => state.players)
-    private currentPhase$ = this.select((state) => state.currentPhase)
+    // private readonly currentPlayer$ = this.select((state) => state.currentPlayer).pipe(tap((player) => {console.log("currentPlayer$! ",player)}))
+    private readonly gameName$ = this.select((state) => state.gameName).pipe(tap((gameName) => {console.log("gameName$! ",gameName)}))
+    private readonly gameState$ = this.select((state) => state.gameState).pipe(tap((gameState) => {console.log("gameState$! ",gameState)}))
+    private readonly players$ = this.select((state) => state.players).pipe(tap((players) => {console.log("players$! ",players)}))
+    private readonly currentPhase$ = this.select((state) => state.currentPhase).pipe(tap((currentPhase) => {console.log("currentPhase$! ",currentPhase)}))
+
     // Encapsulate, bundle multiple state observable into one.
-    vm$ = this.select({
-        currentPlayer: this.currentPlayer$,
+    readonly vm$ = this.select({
+        // currentPlayer: this.currentPlayer$,
         gameName: this.gameName$,
         gameState: this.gameState$,
         players: this.players$,
@@ -31,7 +24,7 @@ export class GameStore extends ComponentStore<GameComponentState> implements OnS
 
     constructor() {
         super({
-            currentPlayer: {name: 'test', role: Role.VILLAGER, state: PlayerState.ALIVE} as Player,
+            // currentPlayer: {name: 'test', role: Role.VILLAGER, state: PlayerState.ALIVE} as Player,
             gameName: 'Default',
             gameState: GameState.CREATED,
             players: [],
@@ -44,11 +37,11 @@ export class GameStore extends ComponentStore<GameComponentState> implements OnS
 
     // Update State 
     // updater -> Take current state and argument object, make amendments, return new state.
-    setCurrentPlayer = this.updater(
-        (state, player:Player) => ({
-            ...state, 
-            currentPlayer: player})
-    );
+    // setCurrentPlayer = this.updater(
+    //     (state, player:Player) => ({
+    //         ...state, 
+    //         currentPlayer: player})
+    // );
     setGameName = this.updater(
         (state, gameName:string) => ({
             ...state, 
@@ -74,4 +67,5 @@ export class GameStore extends ComponentStore<GameComponentState> implements OnS
             ...state, 
             players: [...state.players, player]})
     );
+
 }

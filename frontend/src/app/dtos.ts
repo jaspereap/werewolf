@@ -6,8 +6,8 @@ export interface Game {
 
 export interface Player {
     name: string,
-    role: Role
-    state: PlayerState
+    role: Role | undefined,
+    state: PlayerState | undefined
 }
 
 export enum GameState {
@@ -41,4 +41,17 @@ export enum PhaseType {
 export interface InboundMessage {
     type: string,
     data: Game
-  }
+}
+
+export interface GameComponentState {
+    // currentPlayer: Player;
+    gameName: string;
+    gameState: GameState;
+    players: Player[];
+    currentPhase: PhaseType;
+}
+
+export interface CreateGameRequest {
+    gameName: string;
+    playerName: string;
+}

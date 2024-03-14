@@ -8,16 +8,26 @@ import { rxStompServiceFactory } from './rx-stomp-service-factory';
 import { GameComponent } from './game/game.component';
 import { TestComponent } from './test/test.component';
 import { MessageService } from './message.service';
+import { GameRoomComponent } from './game-room/game-room.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LobbyComponent } from './lobby/lobby.component';
+import { GameListComponent } from './lobby/game-list/game-list.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
-    TestComponent
+    TestComponent,
+    GameRoomComponent,
+    LobbyComponent,
+    GameListComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     WebSocketService,
