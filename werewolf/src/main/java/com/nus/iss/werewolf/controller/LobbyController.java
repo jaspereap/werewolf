@@ -15,6 +15,7 @@ import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.GameState;
 import com.nus.iss.werewolf.model.Player;
 import com.nus.iss.werewolf.model.messages.CreateGameRequest;
+import com.nus.iss.werewolf.model.messages.GameDTO;
 import com.nus.iss.werewolf.service.LobbyService;
 
 import jakarta.json.Json;
@@ -28,7 +29,7 @@ public class LobbyController {
     private LobbyService lobbySvc;
 
     @PostMapping(path= "/create")
-    public String postCreateGame(@RequestBody CreateGameRequest request) {
+    public GameDTO postCreateGame(@RequestBody CreateGameRequest request) {
         System.out.println("Post Create Game Controller");
         System.out.println("Game Name: " + request.getGameName());
         System.out.println("Player Name: " + request.getPlayerName());
@@ -36,13 +37,14 @@ public class LobbyController {
         Player player = new Player(request.getPlayerName());
         Game game = new Game(request.getGameName(), new ArrayList<>(List.of(player)), GameState.CREATED);
         lobbySvc.createGame(game);
-        return Json.createObjectBuilder().add("message", "SUCCESS").build().toString();
+        // return Json.createObjectBuilder().add("message", "SUCCESS").build().toString();
+        return new GameDTO(game);
     }
 
     @GetMapping(path= "/rooms")
-    public List<Game> getRooms() {
+    public List<GameDTO> getRooms() {
         System.out.println("Get Rooms Controller");
-        List<Game> games = lobbySvc.getGames();
+        List<GameDTO> games = lobbySvc.getGames();
         return games;
     }
 }

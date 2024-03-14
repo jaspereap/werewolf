@@ -6,8 +6,7 @@ export interface Game {
 
 export interface Player {
     name: string,
-    role: Role | undefined,
-    state: PlayerState | undefined
+    state: PlayerState
 }
 
 export enum GameState {

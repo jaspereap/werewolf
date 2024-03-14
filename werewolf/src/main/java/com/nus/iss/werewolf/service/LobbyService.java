@@ -2,11 +2,13 @@ package com.nus.iss.werewolf.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.Player;
+import com.nus.iss.werewolf.model.messages.GameDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,8 +34,8 @@ public class LobbyService {
         System.out.println(games.getFirst());
     }
 
-    public List<Game> getGames() {
+    public List<GameDTO> getGames() {
         log.debug("Current games: " + games);
-        return games;
+        return games.stream().map(GameDTO::new).collect(Collectors.toList());
     }
 }

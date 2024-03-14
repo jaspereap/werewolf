@@ -1,17 +1,19 @@
-<p>game-list works!</p>
-<div *ngIf="games">
+<h3>Game List</h3>
+<div *ngIf="games != null">
     <table border="1">
         <tr>
             <td>No.</td>
             <td>Game Name</td>
             <td>Game Status</td>
             <td>Players</td>
+            <td></td>
         </tr>
-        <tr *ngFor="let game of games; let i = index;">
+        <tr *ngFor="let game of games ?? []; let i = index;">
             <td>{{i}}</td>
             <td>{{game.gameName}}</td>
             <td>{{game.gameState}}</td>
             <td>{{game.players.length}}</td>
+            <td><button (click)="joinRoom(game.gameName)">Join</button></td>
         </tr>
     </table>
 </div>
