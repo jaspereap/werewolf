@@ -27,37 +27,7 @@ public class Game {
         this.players = players;
         this.gameState = gameState;
     }
-
-    public List<Player> getAlivePlayers() {
-        return players.stream()
-                      .filter(player -> player.getState() == PlayerState.ALIVE)
-                      .collect(Collectors.toList());
-    }
-
-    public List<Player> getAlivePlayersByRole(Role role) {
-        return getAlivePlayers().stream()
-                                .filter(player -> player.getRole() == role)
-                                .collect(Collectors.toList());
-    }
-
-    public boolean isAllVillagersDead() {
-        if (getAlivePlayersByRole(Role.VILLAGER).size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isAllWerewolvesDead() {
-        if (getAlivePlayersByRole(Role.WEREWOLF).size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isGameOver() {
-        return isAllVillagersDead() | isAllWerewolvesDead();
-    }
-
+    
     public JsonObject toJson() {
         JsonArrayBuilder playersArrayBuilder = Json.createArrayBuilder();
         for (Player player : players) {
