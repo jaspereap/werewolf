@@ -1,22 +1,30 @@
 <h1>Lobby</h1>
 <h3>Current Player</h3>
-<table border="1" *ngIf="currentPlayer != null">
-    <tr>
-        <td>Name</td>
-    </tr>
-    <tr>
-        <td>{{currentPlayer.name}}</td>
-    </tr>
-</table>
-<input type="text" size="10" #test>
-<button (click)="setPlayer(test.value)" style="margin-top: 5px; width:80px;">Set player</button>
+<ng-container *ngIf="currentPlayer$ | async as currentPlayer">
+    <table border="1" *ngIf="currentPlayer.playerName; else noCurrentPlayer">
+        <tr>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>{{currentPlayer.playerName }}</td>
+        </tr>
+    </table>
+</ng-container>
 
-<app-game-list [games]="games$ | async"></app-game-list> 
+
+<div>
+    <input type="text" size="10" #test>
+    <button (click)="setPlayer(test.value)" style="margin-top: 5px; width:80px;">Set player</button>
+</div>
+
+<app-game-list [games]="games$ | async" [currentPlayer]="currentPlayer$ | async"></app-game-list> 
 
 <h3>Create Room</h3>
 <form [formGroup]="newRoomForm">
-    <!-- <input type="text" formControlName="currentPlayerName" placeholder="currentPlayerName"> -->
     <input type="text" formControlName="gameName" placeholder="gameName">
-    <button (click)="processNewRoom()" [disabled]="!currentPlayer">Create Game</button>
+        <button (click)="processNewRoom()" [disabled]="!(currentPlayer$ | async)">Create Game</button>
 </form>
 
+<ng-template #noCurrentPlayer>
+    No player set..
+</ng-template>

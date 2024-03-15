@@ -24,7 +24,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Main Game Initialised!');
-    this.currentPlayer = { name: 'bob', state: PlayerState.ALIVE, role: undefined } as Player;
+    this.currentPlayer = { playerName: 'bob', playerState: PlayerState.ALIVE, role: undefined } as Player;
 
     // Subscribe to component store observable, update state
     this.vm$.subscribe(
@@ -37,7 +37,7 @@ export class GameComponent implements OnInit {
       }
     )
     // Subscribe to server for game updates
-    this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.name);
+    this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.playerName);
   }
 
   setPhaseButton() {

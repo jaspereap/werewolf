@@ -1,0 +1,35 @@
+<h1>Game Room</h1>
+<button (click)="leaveGame()">Leave</button>
+<h3>Game Details</h3>
+<ng-container *ngIf="currentGame$ | async as currentGame"=>
+<div>
+    <table border="1">
+        <tr>
+            <td>Game Name</td>
+            <td>Status</td>
+        </tr>
+        <tr>
+            <td>
+                {{currentGame.gameName}}
+            </td>
+            <td>
+                {{currentGame.gameState}}
+            </td>
+        </tr>
+    </table>
+
+</div>
+<h3>Players</h3>
+<table border="1">
+    <tr>
+        <td>No.</td>
+        <td>Player Name</td>
+    </tr>
+    <tr *ngFor="let p of currentGame.players; let i = index">
+        <td>{{ i }}</td>
+        <td>{{ p.playerName }}</td>
+    </tr>
+</table>
+<br><br>
+<button (click)="startGame()">Start Game</button>
+</ng-container>

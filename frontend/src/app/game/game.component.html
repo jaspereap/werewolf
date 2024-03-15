@@ -12,9 +12,9 @@
           <td>State</td>
         </tr>
         <tr>
-          <td>{{ this.currentPlayer.name }}</td>
+          <td>{{ this.currentPlayer.playerName }}</td>
           <!-- <td>{{ this.currentPlayer.role }}</td> -->
-          <td>{{ this.currentPlayer.state }}</td>
+          <td>{{ this.currentPlayer.playerState }}</td>
         </tr>
       </table>
     <div>
@@ -26,9 +26,9 @@
             <td>State</td>
         </tr>
         <tr *ngFor="let player of this.players">
-            <td>{{player.name}}</td>
+            <td>{{player.playerName}}</td>
             <!-- <td>{{player.role}}</td> -->
-            <td>{{player.state}}</td>
+            <td>{{player.playerState}}</td>
         </tr>
     
       </table>

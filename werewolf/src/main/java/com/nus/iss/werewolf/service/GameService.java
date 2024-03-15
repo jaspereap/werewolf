@@ -23,10 +23,6 @@ public class GameService {
     @Autowired @Qualifier("executor")
     private Executor executor;
 
-    // public GameService(Executor executor) {
-    //     this.executor = executor;
-    // }
-
     public void startGame(Game game) {
         executor.execute(() -> {
             // Game initialization logic
@@ -61,7 +57,7 @@ public class GameService {
 
     public List<Player> getAlivePlayers(Game game) {
         return game.getPlayers().stream()
-                      .filter(player -> player.getState() == PlayerState.ALIVE)
+                      .filter(player -> player.getPlayerState() == PlayerState.ALIVE)
                       .collect(Collectors.toList());
     }
     public List<Player> getAlivePlayersByRole(Role role, Game game) {
@@ -84,4 +80,5 @@ public class GameService {
     public boolean isGameOver(Game game) {
         return isAllVillagersDead(game) | isAllWerewolvesDead(game);
     }
+
 }

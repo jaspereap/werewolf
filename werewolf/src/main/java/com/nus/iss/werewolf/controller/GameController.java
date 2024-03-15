@@ -37,27 +37,28 @@ public class GameController {
 
     @GetMapping(path = "/test")
     public void test() {
-		// Create and initialise game
-		Game game = GameFactory.initGame("testGame", "bob");
+		// // Create and initialise game
+		// Game game = GameFactory.initGame("testGame", "bob");
 
-		// Add players
-		ArrayList<Player> players = new ArrayList<>(List.of(
-			new Player("Bobby"),
-			new Player("John"),
-			new Player("Jopie"),
-			new Player("Jookoon"),
-			new Player("Blop"),
-			new Player("Poopie")
-		));
-		lobbySvc.addPlayers(players, game);
+		// // Add players
+		// ArrayList<Player> players = new ArrayList<>(List.of(
+		// 	new Player("Bobby"),
+		// 	new Player("John"),
+		// 	new Player("Jopie"),
+		// 	new Player("Jookoon"),
+		// 	new Player("Blop"),
+		// 	new Player("Poopie")
+		// ));
+		// lobbySvc.addPlayers(players, game);
 
-		// Assign Roles
-		roleSvc.assignRoles(game);
-        // String gameInitResponse = Json.createObjectBuilder().add("type", "GAMEINIT").add("game", game.toJson()).build().toString();
-        JsonObject gameInitResponse = msgSvc.addType(MessageType.GAME_INIT, game.toJson());
+		// // Assign Roles
+		// roleSvc.assignRoles(game);
+        // // String gameInitResponse = Json.createObjectBuilder().add("type", "GAMEINIT").add("game", game.toJson()).build().toString();
+        // JsonObject gameInitResponse = msgSvc.addType(MessageType.GAME_INIT, game.toJson());
 
-        // Test pushing game data to client
-        msgSvc.publishToGame("testGame", gameInitResponse.toString());
-        System.out.printf("Published to game `%s`\n", "testGame");
+        // // Test pushing game data to client
+        // msgSvc.publishToGame("testGame", gameInitResponse.toString());
+        // System.out.printf("Published to game `%s`\n", "testGame");
+		this.lobbySvc.getGames();
     }
 }

@@ -5,8 +5,8 @@ export interface Game {
 }
 
 export interface Player {
-    name: string,
-    state: PlayerState
+    playerName: string,
+    playerState: PlayerState
 }
 
 export enum GameState {
@@ -36,12 +36,12 @@ export enum PhaseType {
     EXECUTION, 
     GAMEOVER
 }
-
+// STOMP
 export interface InboundMessage {
     type: string,
     data: Game
 }
-
+// HTTP
 export interface GameComponentState {
     // currentPlayer: Player;
     gameName: string;
@@ -49,7 +49,7 @@ export interface GameComponentState {
     players: Player[];
     currentPhase: PhaseType;
 }
-
+// HTTP
 export interface CreateGameRequest {
     gameName: string;
     playerName: string;

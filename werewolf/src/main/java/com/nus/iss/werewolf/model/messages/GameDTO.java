@@ -12,15 +12,19 @@ import com.nus.iss.werewolf.model.Player;
 @Data
 public class GameDTO {
     private String gameName;
-    private List<String> players;
+    // private List<String> players;
+    private List<PlayerDTO> players;
     private GameState gameState;
 
     public GameDTO(Game game) {
         this.gameName = game.getGameName();
         this.gameState = game.getGameState();
         this.players = game.getPlayers().stream()
-                               .map(Player::getName) // Assuming Player class has a getName() method
+                               .map(PlayerDTO::new)
                                .collect(Collectors.toList());
+        // this.players = game.getPlayers().stream()
+        //                        .map(Player::getName) // Assuming Player class has a getName() method
+        //                        .collect(Collectors.toList());
     }
 }
 

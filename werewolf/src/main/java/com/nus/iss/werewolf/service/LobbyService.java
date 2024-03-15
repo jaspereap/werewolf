@@ -2,6 +2,7 @@ package com.nus.iss.werewolf.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -16,17 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LobbyService {
 
+    // TODO: Mock Game db
     List<Game> games = new ArrayList<>();
-
-
-    public void addPlayer(Player player, Game game) {
-        game.getPlayers().add(player);
-    }
-    public void addPlayers(List<Player> players, Game game) {
-        players.forEach(player-> {
-            game.getPlayers().add(player);
-        });
-    }
 
     public void createGame(Game game) {
         games.add(game);
@@ -37,5 +29,46 @@ public class LobbyService {
     public List<GameDTO> getGames() {
         log.debug("Current games: " + games);
         return games.stream().map(GameDTO::new).collect(Collectors.toList());
+    }
+
+    public Optional<GameDTO> getGame(String gameName, String playerName) {
+        return games.stream()
+            .filter(game -> game.getGameName().equals(gameName))
+            .map(GameDTO::new)
+            .findFirst();
+    }
+
+    public Optional<Game> joinGame(String gameName, String playerName) {
+        return games.stream()
+            .filter(x -> x.getGameName().equals(gameName))
+            .peek(game -> addPlayer(game, playerName))
+            .findFirst();
+    }
+    
+    public boolean leaveGame(String gameName, String playerName) {
+        Optional<Game> leaveGame = games.stream()
+            .filter(game -> game.getGameName().equals(gameName))
+            .findFirst();
+        if (leaveGame.isEmpty()) {
+            return false;
+        }
+        removePlayer(leaveGame.get(), playerName);
+        return true;
+    }
+
+
+
+
+
+
+    private boolean addPlayer(Game game, String playerName) {
+        // TODO: Retrieve player
+        Player player = new Player(playerName);
+        return game.getPlayers().add(player);
+    }
+    
+    private boolean removePlayer(Game game, String playerName) {
+        System.out.println("Removing player: " + playerName);
+        return game.getPlayers().removeIf(player -> player.getPlayerName().equals(playerName));
     }
 }

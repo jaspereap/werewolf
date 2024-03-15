@@ -8,25 +8,25 @@ import lombok.Data;
 
 @Data
 public class Player {
-    private final String name;
+    private final String playerName;
     private Role role;
-    private PlayerState state;
+    private PlayerState playerState;
 
     public Player(String name) {
-        this.name = name;
-        this.state = PlayerState.ALIVE;
+        this.playerName = name;
+        this.playerState = PlayerState.ALIVE;
     }
 
     public void killPlayer() {
-        this.state = PlayerState.DEAD;
-        System.out.println("\t" + name + " has been killed!" + " (" + role + ")");
+        this.playerState = PlayerState.DEAD;
+        System.out.println("\t" + playerName + " has been killed!" + " (" + role + ")");
     }
 
     public JsonObject toJson() {
         return Json.createObjectBuilder()
-                    .add("name", name)
+                    .add("name", playerName)
                     .add("role", role.toString())
-                    .add("state", state.toString())
+                    .add("state", playerState.toString())
                     .build();
     }
 }
