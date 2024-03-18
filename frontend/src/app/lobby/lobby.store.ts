@@ -104,27 +104,29 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     )
 );
 
-  readonly joinGame = this.effect((gameName$: Observable<string>) => gameName$.pipe(
-    tap(() => console.log('joinGame triggered')),
-    exhaustMap((gameName) => 
-      this.currentPlayer$.pipe(
-        exhaustMap((currentPlayer) => 
-          this.http.post<Game>(`${env.backendUrl}/join/${gameName}`, {playerName: currentPlayer.playerName, gameName: gameName})
-          .pipe(
-            tapResponse(
-              resp => {
-                console.log('joinGame Server Response: ', resp);
-                this.setCurrentGame(resp);
-                // Route to room
-                this.router.navigate(['/room', gameName])
-              },
-              error => console.error(error)
-            )
-          ))
-      ))
-  ));
+  readonly joinGame = this.effect((gameName$: Observable<string>) => 
+    gameName$.pipe(
+      withLatestFrom(this.currentPlayer$),
+      tap(() => console.log('joinGame triggered')),
+      exhaustMap(([gameName, currentPlayer]) => 
+        this.http.post<Game>(`${env.backendUrl}/join/${gameName}`, { playerName: currentPlayer.playerName, gameName })
+        .pipe(
+          tapResponse(
+            resp => {
+              console.log('joinGame Server Response: ', resp);
+              this.setCurrentGame(resp);
+              // Route to room
+              this.router.navigate(['/room', gameName]);
+            },
+            error => console.error(error)
+          )
+        )
+      )
+    )
+  );
 
-  leaveGame = this.effect(trigger$ => 
+
+  readonly leaveGame = this.effect(trigger$ => 
     trigger$.pipe(
       tap(() => console.log('leaveGame triggered')),
       withLatestFrom(this.currentPlayer$, this.currentGame$),

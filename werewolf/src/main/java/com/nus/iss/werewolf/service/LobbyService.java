@@ -27,7 +27,7 @@ public class LobbyService {
     }
 
     public List<GameDTO> getGames() {
-        log.debug("Current games: " + games);
+        log.debug("\tCurrent games: \n" + games);
         return games.stream().map(GameDTO::new).collect(Collectors.toList());
     }
 
@@ -46,18 +46,22 @@ public class LobbyService {
     }
     
     public boolean leaveGame(String gameName, String playerName) {
-        Optional<Game> leaveGame = games.stream()
-            .filter(game -> game.getGameName().equals(gameName))
-            .findFirst();
-        if (leaveGame.isEmpty()) {
-            return false;
+        for (Game game : games) {
+            if (game.getGameName().equals(gameName)) {
+                boolean exists = game.getPlayers().stream().anyMatch(player -> player.getPlayerName().equals(playerName));
+                if (exists) {
+                    game.getPlayers().removeIf(player -> player.getPlayerName().equals(playerName));
+                    return true;
+                } else {
+                    System.out.println("Player " + playerName + " not found in game " + gameName);
+                    return false;
+                }
+            }
         }
-        removePlayer(leaveGame.get(), playerName);
-        return true;
+        System.out.println("Game " + gameName + " not found");
+        return false;
     }
-
-
-
+    
 
 
 
@@ -67,8 +71,4 @@ public class LobbyService {
         return game.getPlayers().add(player);
     }
     
-    private boolean removePlayer(Game game, String playerName) {
-        System.out.println("Removing player: " + playerName);
-        return game.getPlayers().removeIf(player -> player.getPlayerName().equals(playerName));
-    }
 }

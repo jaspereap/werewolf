@@ -1,25 +1,20 @@
 package com.nus.iss.werewolf.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nus.iss.werewolf.model.Game;
-import com.nus.iss.werewolf.model.Player;
-import com.nus.iss.werewolf.service.GameFactory;
 import com.nus.iss.werewolf.service.GameService;
 import com.nus.iss.werewolf.service.LobbyService;
-import com.nus.iss.werewolf.service.MessageContents;
 import com.nus.iss.werewolf.service.MessageService;
 import com.nus.iss.werewolf.service.MessageType;
 import com.nus.iss.werewolf.service.RoleService;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -56,9 +51,15 @@ public class GameController {
         // // String gameInitResponse = Json.createObjectBuilder().add("type", "GAMEINIT").add("game", game.toJson()).build().toString();
         // JsonObject gameInitResponse = msgSvc.addType(MessageType.GAME_INIT, game.toJson());
 
-        // // Test pushing game data to client
-        // msgSvc.publishToGame("testGame", gameInitResponse.toString());
-        // System.out.printf("Published to game `%s`\n", "testGame");
-		this.lobbySvc.getGames();
+		// this.lobbySvc.getGames();
+
+        // Test pushing game data to client
+        msgSvc.publishToTopic("gameName", "testing", MessageType.ACK);
+    }
+
+    @MessageMapping("/{gameName}/ack")
+    public void acknowledge(@DestinationVariable String gameName, @Payload String body, SimpMessageHeaderAccessor header){
+        System.out.printf("\tInbound: \n\tPath: %s \n\tBody: %s\n", gameName, body);
+        System.out.println("\tInbound Headers: " + header.getFirstNativeHeader("type"));
     }
 }

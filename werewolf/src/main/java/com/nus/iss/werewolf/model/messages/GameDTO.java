@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.GameState;
-import com.nus.iss.werewolf.model.Player;
 
 @Data
 public class GameDTO {
     private String gameName;
-    // private List<String> players;
     private List<PlayerDTO> players;
     private GameState gameState;
 

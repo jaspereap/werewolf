@@ -37,7 +37,7 @@ export class GameComponent implements OnInit {
       }
     )
     // Subscribe to server for game updates
-    this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.playerName);
+    // this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.playerName);
   }
 
   setPhaseButton() {

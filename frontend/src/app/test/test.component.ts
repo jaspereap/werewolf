@@ -4,6 +4,8 @@ import { RxStompService } from '../rx-stomp.service';
 import { Message } from '@stomp/stompjs';
 
 import { Game } from '../dtos';
+import { MessageService } from '../message.service';
+import { GameService } from '../game.service';
 
 @Component({
   selector: 'app-test',
@@ -13,18 +15,16 @@ import { Game } from '../dtos';
 
   export class TestComponent implements OnInit, OnDestroy {
     title = 'WebSocket Example';
+    gameName = 'gameName';
+    playerName = 'bob';
 
     topicSub!: Subscription;
 
-    constructor(private rxStompService: RxStompService) {}
+    constructor(private gameSvc: GameService) {}
   
     
     ngOnInit(): void {
-      this.topicSub = this.rxStompService.watch('/topic/gameInit').subscribe(
-        (message: Message) => {
-          console.log(message.body)
-        }
-      )
+      this.gameSvc.subscribeGameRoom(this.gameName, this.playerName);
     }
   
     // sendMessage(input: string) {

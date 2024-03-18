@@ -2,8 +2,6 @@ package com.nus.iss.werewolf.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import com.nus.iss.werewolf.model.phases.Phase;
 
 import jakarta.json.Json;

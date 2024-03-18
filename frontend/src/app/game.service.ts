@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { Message } from '@stomp/stompjs';
-import { InboundMessage } from './dtos';
+import { MessageType } from './dtos';
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +8,19 @@ import { InboundMessage } from './dtos';
 export class GameService {
 
   constructor(private messageSvc: MessageService) { }
-    // Fetch game
-    subscribeGame(gameName: string, playerName: string) {
-      this.messageSvc.subscribeToGame(gameName).subscribe(
-          (msg: Message) => {
-              this.messageSvc.publishAck(gameName, playerName); // Send ack
-              const inbound: InboundMessage = JSON.parse(msg.body);
-              console.log(inbound);
+
+    subscribeGameRoom(gameName: string, playerName: string) {
+      return this.messageSvc.subscribe(gameName).subscribe(
+          ({headers, body}) => {
+              this.publishACK(gameName, playerName)
           }
       )
-  }
+    }
+
+    publishACK(gameName: string, playerName: string) {
+      const ackEndpoint = 'ack'
+      this.messageSvc.publish(`${gameName}/${ackEndpoint}`, playerName, MessageType.ACK);
+    }
+
+
 }
