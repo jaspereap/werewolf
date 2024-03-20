@@ -27,7 +27,9 @@ export class MessageService {
       })
     )
   }
-
+  unsubscribe() {
+    this.rxStompService.deactivate();
+  }
   publish(topic: string, playerName: string, type: MessageType) {
     console.log(`SENDING: ${env.outboundPrefix}/${topic}`);
     const headers = {'type': type.toString()};

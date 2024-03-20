@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment as env } from '../../environments/environment';
-import { CreateGameRequest, Game, Player } from '../models/dtos';
-import { Observable, exhaustMap, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import { Game, Player } from '../models/dtos';
+import { Observable, exhaustMap, take, tap, withLatestFrom } from 'rxjs';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { Router } from '@angular/router';
+import { LobbyService } from './lobby.service';
 
 export interface LobbyState {
   currentPlayer: Player,
@@ -15,7 +15,8 @@ export interface LobbyState {
 @Injectable({providedIn: 'root'})
 export class LobbyStore extends ComponentStore<LobbyState> {
   
-  constructor(private http: HttpClient, private router: Router) { 
+  constructor( private router: Router, 
+    private lobbyService: LobbyService) { 
 // Initialise store
     super({
       currentPlayer: {playerName: ''} as Player,
@@ -37,6 +38,10 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     ...state,
     currentGame
   }))
+  readonly unsetCurrentGame = this.updater((state) => ({
+    ...state,
+    currentGame: {} as Game
+  }))
   readonly setGames = this.updater((state, games: Game[]) => ({
     ...state,
     games: games
@@ -46,11 +51,23 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     games: [...state.games, game]
   }))
 
-  addPlayer = this.updater((state, newPlayer: Player) => ({
+  readonly addPlayer = this.updater((state, newPlayer: Player) => ({
     ...state,
     currentGame: {
       ...state.currentGame,
-      players: [...state.currentGame.players, newPlayer]
+      players: state.currentGame && Array.isArray(state.currentGame.players) 
+      ? [...state.currentGame.players, newPlayer] 
+      : [newPlayer]
+    }
+  }))
+
+  readonly removePlayer = this.updater((state, removePlayer: Player) => ({
+    ...state,
+    currentGame: {
+      ...state.currentGame,
+      players: state.currentGame && Array.isArray(state.currentGame.players)
+      ? state.currentGame.players.filter(player => player.playerName !== removePlayer.playerName)
+      : []
     }
   }))
 
@@ -59,7 +76,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     trigger$.pipe(
       tap(() => console.log('getGames triggered')),
         exhaustMap(() => {
-          return this.http.get<Game[]>(`${env.backendUrl}/rooms`).pipe(
+          return this.lobbyService.getGames().pipe(
             tapResponse(
               (games) => {
                 console.log('getGames Server Response: ', games)
@@ -78,12 +95,12 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     trigger$.pipe(
       tap(() => console.log('getGame triggered')),
       exhaustMap(([playerName, gameName]) => 
-        this.http.post<Game>(`${env.backendUrl}/room/${gameName}`, { playerName, gameName }).pipe(
+        this.lobbyService.getCurrentGame(playerName, gameName).pipe(
           tapResponse(
             response => {
               console.log('getGame Server Response: ', response);
               this.setCurrentPlayer({playerName: playerName} as Player);
-              this.setCurrentGame(response);
+              // this.setCurrentGame(response);
             },
             error => console.error(error)
           )
@@ -98,17 +115,16 @@ export class LobbyStore extends ComponentStore<LobbyState> {
         this.select(state => state.currentPlayer).pipe(
           take(1), // Take the current player state once to avoid repeating the operation
           exhaustMap(currentPlayer => 
-            this.http.post<Game>(`${env.backendUrl}/create`, { playerName: currentPlayer.playerName, gameName })
-            .pipe(
+            this.lobbyService.createGame(currentPlayer.playerName, gameName).pipe(
               tapResponse(
                 (game) => {
                   console.log("createGame Server Response: ", game);
-                  // Add game to list
+                  // Add game to list - not needed if user routed to room immediately.
                   this.addGame(game);
                   // Set current game to created game
                   this.setCurrentGame(game);
                   // Route to created game room
-                  this.router.navigate(['/room', gameName]);
+                  this.enterRoom(gameName, currentPlayer.playerName)
                 },
                 (error) => console.error(error)
               )
@@ -116,29 +132,26 @@ export class LobbyStore extends ComponentStore<LobbyState> {
           )
         )
       )
-    )
-  );
+    ));
 // For joining a game
   readonly joinGame = this.effect((gameName$: Observable<string>) => 
     gameName$.pipe(
       withLatestFrom(this.currentPlayer$),
       tap(() => console.log('joinGame triggered')),
       exhaustMap(([gameName, currentPlayer]) => 
-        this.http.post<Game>(`${env.backendUrl}/join/${gameName}`, { playerName: currentPlayer.playerName, gameName })
-        .pipe(
-          tapResponse(
-            resp => {
-              console.log('joinGame Server Response: ', resp);
-              this.setCurrentGame(resp);
-              // Route to room
-              this.router.navigate(['/room', gameName]);
-            },
-            error => console.error(error)
-          )
+      this.lobbyService.joinGame(currentPlayer.playerName, gameName).pipe(
+        tapResponse(
+          resp => {
+            console.log('joinGame Server Response: ', resp);
+            this.setCurrentGame(resp);
+            // Route to room
+            this.enterRoom(gameName, currentPlayer.playerName);
+          },
+          error => console.error(error)
         )
       )
     )
-  );
+  ));
 
 // For leaving a game
   readonly leaveGame = this.effect(trigger$ => 
@@ -146,10 +159,11 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       tap(() => console.log('leaveGame triggered')),
       withLatestFrom(this.currentPlayer$, this.currentGame$),
       exhaustMap(([,currentPlayer, currentGame]) => 
-        this.http.post(`${env.backendUrl}/leave/${currentGame.gameName}`, { playerName: currentPlayer.playerName, gameName: currentGame.gameName }).pipe(
+        this.lobbyService.leaveGame(currentPlayer.playerName, currentGame.gameName).pipe(
           tapResponse(
             resp => {
               console.log('leaveGame Server Response: ', resp);
+              this.unsetCurrentGame();
               this.router.navigate(['/lobby']);
             },
             err => console.error(err)
@@ -159,6 +173,10 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     )
   );
   
-
+  enterRoom(gameName: string, playerName: string) {
+    console.log('entering room')
+    // Route to room
+    this.router.navigate(['/room', gameName]);
+  }
   deleteGame() {}
 }

@@ -21,6 +21,7 @@ import com.nus.iss.werewolf.model.Player;
 import com.nus.iss.werewolf.model.messages.CreateGameRequest;
 import com.nus.iss.werewolf.model.messages.JoinGameRequest;
 import com.nus.iss.werewolf.model.messages.dtos.GameDTO;
+import com.nus.iss.werewolf.model.messages.dtos.PlayerDTO;
 import com.nus.iss.werewolf.service.LobbyService;
 import com.nus.iss.werewolf.service.MessageService;
 import com.nus.iss.werewolf.service.MessageType;
@@ -71,12 +72,14 @@ public class LobbyController {
         System.out.println("\tGame Name: " + request.getGameName() + " Player Name: " + request.getPlayerName());
         // TODO: Get player object
         Player player = new Player(request.getPlayerName());
+        PlayerDTO playerDTO = new PlayerDTO(player);
         Optional<Game> joinedGame = lobbySvc.joinGame(gameName, request.getPlayerName());
         if (joinedGame.isEmpty()) {
             System.out.println("\tJOIN GAME FAILED!");
         }
         // Broadcast room join
-        msgSvc.publishToTopic(gameName, player.toJson().toString(), MessageType.PLAYER_JOINED);
+        System.out.println(playerDTO.toString());
+        msgSvc.publishToTopic(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
         return ResponseEntity.ok(new GameDTO(joinedGame.get()));
     }
 
@@ -85,11 +88,12 @@ public class LobbyController {
         System.out.println("Post Leave Game Controller");
         // TODO: Get player object
         Player player = new Player(request.getPlayerName());
+        PlayerDTO playerDTO = new PlayerDTO(player);
         if (!this.lobbySvc.leaveGame(gameName, request.getPlayerName())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'message':'FAIL'}");
         }
         // Broadcast room leave
-        msgSvc.publishToTopic(gameName, player.toJson().toString(), MessageType.PLAYER_LEFT);
+        msgSvc.publishToTopic(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_LEFT);
         return ResponseEntity.ok("{\"message\":\"SUCCESS\"}");
     }
 }

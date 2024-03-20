@@ -43,6 +43,11 @@ public class TestController {
         msgSvc.publishToTopic(gameName, "player joined", MessageType.PLAYER_JOINED);
     }
 
+    @GetMapping(path = "/current_games")
+    public void getCurrentGames() {
+        System.out.println("\nCurrent Games:\n" + lobbySvc.getGames());
+    }
+
     @MessageMapping("/{gameName}/ack")
     public void acknowledge(@DestinationVariable String gameName, @Payload String body, SimpMessageHeaderAccessor header){
         System.out.printf("\tInbound: \n\tPath: %s \n\tBody: %s\n", gameName, body);

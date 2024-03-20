@@ -18,23 +18,28 @@ interface FormData {
 })
 export class LobbyComponent implements OnInit, OnDestroy{
   newRoomForm!: FormGroup;
-  
+  // States
   currentPlayer$ = this.lobbyStore.currentPlayer$;
   games$ = this.lobbyStore.games$;
+  currentGame$ = this.lobbyStore.currentGame$;
   // State Checks
   isCurrentPlayerSet$: Observable<boolean> = this.currentPlayer$.pipe(
     map(player => !!player.playerName)
   );
   // Sub management
   ScurrentPlayer$!: Subscription;
-  
+  ScurrentGame$!: Subscription;
+  Sgames$!: Subscription;
+
   constructor(private fb: FormBuilder, private lobbyStore: LobbyStore, private localStore: LocalStoreService) {}
 
   ngOnInit(): void {
     this.newRoomForm = this.initForm();
     console.log('Lobby Component Init')
-
-    this.lobbyStore.getGames();
+    this.ScurrentGame$ = this.currentGame$.subscribe(
+      (g) => console.log('current game: ', g)
+    )
+    this.Sgames$ = this.lobbyStore.getGames();
     this.ScurrentPlayer$ = this.currentPlayer$.subscribe(
       (player) => {
         console.log(player)
@@ -49,6 +54,8 @@ export class LobbyComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     console.log('Lobby Component Destroyed');
     this.ScurrentPlayer$.unsubscribe();
+    this.ScurrentGame$.unsubscribe();
+    this.Sgames$.unsubscribe();
   }
 
   processNewRoom() {

@@ -1,48 +1,35 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { MessageType, Player } from '../models/dtos';
+import { Game, MessageType, Player } from '../models/dtos';
 import { MessageService } from '../message.service';
 import { LobbyStore } from './lobby.store';
+import { HttpClient } from '@angular/common/http';
+import { environment as env } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LobbyService {
 
-  constructor(private messageSvc: MessageService, 
-    private lobbyStore: LobbyStore) { }
+  constructor(private http:HttpClient) { }
 
-    // Listen for player join/leave, game start
-    subscribeGameRoom(gameName: string, playerName: string) {
-      return this.messageSvc.subscribe(gameName).subscribe(
-          ({headers, body}) => {
-              this.publishACK(gameName, playerName)
-
-              switch(headers['type'] as MessageType) {
-                case MessageType.PLAYER_JOINED: {
-                  console.log('Player_joined message received')
-                  console.log('Player_joined body: ', body)
-                  // this.lobbyStore.updateCurrentGamePlayers(JSON.parse(body) as Player)
-                  // this.lobbyStore.getCurrentGame([playerName, gameName]);
-                  this.lobbyStore.addPlayer(JSON.parse(body) as Player);
-                  break;
-                }
-                case MessageType.ACK: {
-                  console.log('Server Acknowledged')
-                  break;
-                }
-                case MessageType.PLAYER_LEFT: {
-                  console.log('Player_left message received')
-                  console.log('Player_left body: ', body)
-                  this.lobbyStore.getCurrentGame([playerName, gameName]);
-                  break;
-                }
-              }
-          }
-      )
+    getGames(): Observable<Game[]>{
+      return this.http.get<Game[]>(`${env.backendUrl}/rooms`)
     }
 
-    publishACK(gameName: string, playerName: string) {
-      const ackEndpoint = 'ack'
-      this.messageSvc.publish(`${gameName}/${ackEndpoint}`, playerName, MessageType.ACK);
+    getCurrentGame(playerName: string, gameName: string): Observable<Game> {
+      return this.http.post<Game>(`${env.backendUrl}/room/${gameName}`, { playerName, gameName })
+    }
+
+    createGame(playerName: string, gameName: string) {
+      return this.http.post<Game>(`${env.backendUrl}/create`, { playerName: playerName, gameName: gameName })
+    }
+
+    joinGame(playerName: string, gameName: string) {
+      return this.http.post<Game>(`${env.backendUrl}/join/${gameName}`, { playerName: playerName, gameName: gameName })
+    }
+
+    leaveGame(playerName: string, gameName: string) {
+      return this.http.post(`${env.backendUrl}/leave/${gameName}`, { playerName: playerName, gameName: gameName })
     }
 }

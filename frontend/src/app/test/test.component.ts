@@ -25,7 +25,7 @@ import { LobbyService } from '../lobby/lobby.service';
   
     
     ngOnInit(): void {
-      this.lobbyService.subscribeGameRoom(this.gameName, this.playerName);
+      // this.lobbyService.subscribeGameRoom(this.gameName, this.playerName);
     }
   
     // sendMessage(input: string) {

@@ -25,9 +25,9 @@ public class Player {
 
     public JsonObject toJson() {
         return Json.createObjectBuilder()
-                    .add("name", playerName)
+                    .add("playerName", playerName)
                     .add("role", role.toString())
-                    .add("state", playerState.toString())
+                    .add("playerState", playerState.toString())
                     .build();
     }
 }
