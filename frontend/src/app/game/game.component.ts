@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameState, PhaseType, Player, PlayerState, Role } from '../dtos';
+import { GameState, PhaseType, Player, PlayerState, Role } from '../models/dtos';
 import { GameStore } from './game.store';
 import { provideComponentStore } from '@ngrx/component-store';
 import { GameService } from '../game.service';

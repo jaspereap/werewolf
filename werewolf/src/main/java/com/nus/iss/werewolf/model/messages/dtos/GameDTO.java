@@ -1,4 +1,4 @@
-package com.nus.iss.werewolf.model.messages;
+package com.nus.iss.werewolf.model.messages.dtos;
 
 import java.util.List;
 

@@ -57,5 +57,7 @@ export interface CreateGameRequest {
 
 export enum MessageType {
     ACK = 'ACK',
-    JOIN_ROOM = 'JOIN_ROOM'
+    JOIN_ROOM = 'JOIN_ROOM',
+    PLAYER_JOINED = 'PLAYER_JOINED',
+    PLAYER_LEFT = 'PLAYER_LEFT'
 }

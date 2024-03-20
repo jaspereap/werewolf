@@ -1,4 +1,4 @@
-package com.nus.iss.werewolf.model.messages;
+package com.nus.iss.werewolf.model.messages.dtos;
 
 import com.nus.iss.werewolf.model.Player;
 import com.nus.iss.werewolf.model.PlayerState;

@@ -14,6 +14,7 @@ public class Player {
 
     public Player(String name) {
         this.playerName = name;
+        this.role = Role.VILLAGER;
         this.playerState = PlayerState.ALIVE;
     }
 

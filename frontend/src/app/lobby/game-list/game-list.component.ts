@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Game, Player } from '../../dtos';
+import { Game, Player } from '../../models/dtos';
 import { LobbyStore } from '../lobby.store';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -22,7 +22,6 @@ export class GameListComponent implements OnInit, OnChanges, OnDestroy {
     console.log("Joining room: ", gameName)
     this.lobbyStore.joinGame(of(gameName));
     this.lobbyStore.getGames();
-    // this.router.navigate(['/room'])
   }
   ngOnChanges(changes: SimpleChanges) {
     console.log('Game-list changed:', changes);

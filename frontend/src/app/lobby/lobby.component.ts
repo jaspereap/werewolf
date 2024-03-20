@@ -1,9 +1,10 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { LobbyStore } from './lobby.store';
-import { Player } from '../dtos';
+import { Player } from '../models/dtos';
 import { provideComponentStore } from '@ngrx/component-store';
 import { LocalStoreService } from '../local-store.service';
+import { Observable, Subscription, map } from 'rxjs';
 
 interface FormData {
   currentPlayerName: string,
@@ -20,17 +21,34 @@ export class LobbyComponent implements OnInit, OnDestroy{
   
   currentPlayer$ = this.lobbyStore.currentPlayer$;
   games$ = this.lobbyStore.games$;
+  // State Checks
+  isCurrentPlayerSet$: Observable<boolean> = this.currentPlayer$.pipe(
+    map(player => !!player.playerName)
+  );
+  // Sub management
+  ScurrentPlayer$!: Subscription;
   
   constructor(private fb: FormBuilder, private lobbyStore: LobbyStore, private localStore: LocalStoreService) {}
-  ngOnDestroy(): void {
-    console.log('Lobby Component Destroyed');
-  }
 
   ngOnInit(): void {
     this.newRoomForm = this.initForm();
     console.log('Lobby Component Init')
-    console.log('getting games')
+
     this.lobbyStore.getGames();
+    this.ScurrentPlayer$ = this.currentPlayer$.subscribe(
+      (player) => {
+        console.log(player)
+        // If current player not set, retrieve from sessionStorage if available
+        if (!player.playerName && this.localStore.getCurrentPlayerName()) {
+          this.lobbyStore.setCurrentPlayer(this.newPlayer(this.localStore.getCurrentPlayerName()));
+        }
+      }
+    )
+  }
+
+  ngOnDestroy(): void {
+    console.log('Lobby Component Destroyed');
+    this.ScurrentPlayer$.unsubscribe();
   }
 
   processNewRoom() {

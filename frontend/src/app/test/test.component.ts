@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { RxStompService } from '../rx-stomp.service';
+import { RxStompService } from '../rxStomp/rx-stomp.service';
 import { Message } from '@stomp/stompjs';
 
-import { Game } from '../dtos';
+import { Game } from '../models/dtos';
 import { MessageService } from '../message.service';
 import { GameService } from '../game.service';
+import { LobbyService } from '../lobby/lobby.service';
 
 @Component({
   selector: 'app-test',
@@ -20,11 +21,11 @@ import { GameService } from '../game.service';
 
     topicSub!: Subscription;
 
-    constructor(private gameSvc: GameService) {}
+    constructor(private lobbyService: LobbyService) {}
   
     
     ngOnInit(): void {
-      this.gameSvc.subscribeGameRoom(this.gameName, this.playerName);
+      this.lobbyService.subscribeGameRoom(this.gameName, this.playerName);
     }
   
     // sendMessage(input: string) {

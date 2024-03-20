@@ -1,14 +1,9 @@
 <h1>Lobby</h1>
-<h3>Current Player</h3>
+
 <ng-container *ngIf="currentPlayer$ | async as currentPlayer">
-    <table border="1" *ngIf="currentPlayer.playerName; else noCurrentPlayer">
-        <tr>
-            <td>Name</td>
-        </tr>
-        <tr>
-            <td>{{currentPlayer.playerName }}</td>
-        </tr>
-    </table>
+    <div border="1" *ngIf="currentPlayer.playerName; else noCurrentPlayer">
+        <p>You are {{currentPlayer.playerName }}.</p>
+    </div>
 </ng-container>
 
 
@@ -22,9 +17,11 @@
 <h3>Create Room</h3>
 <form [formGroup]="newRoomForm">
     <input type="text" formControlName="gameName" placeholder="gameName">
-        <button (click)="processNewRoom()" [disabled]="!(currentPlayer$ | async)">Create Game</button>
+        <button (click)="processNewRoom()" [disabled]="!(isCurrentPlayerSet$ | async)">Create Game</button>
 </form>
 
 <ng-template #noCurrentPlayer>
-    No player set..
+    <p>You are nobody.</p>
 </ng-template>
+
+<app-game-room></app-game-room>

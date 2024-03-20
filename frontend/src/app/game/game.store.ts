@@ -1,5 +1,5 @@
 import { ComponentStore, OnStoreInit } from "@ngrx/component-store";
-import { GameComponentState, GameState, PhaseType, Player, PlayerState, Role } from "../dtos";
+import { GameComponentState, GameState, PhaseType, Player, PlayerState, Role } from "../models/dtos";
 import { Injectable } from "@angular/core";
 import { tap } from "rxjs";
 

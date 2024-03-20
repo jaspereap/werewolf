@@ -7,6 +7,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nus.iss.werewolf.service.GameService;
@@ -20,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(path = "/api/v1")
-public class GameController {
+public class TestController {
     @Autowired
     MessageService msgSvc;
 	@Autowired
@@ -30,31 +31,16 @@ public class GameController {
 	@Autowired
 	LobbyService lobbySvc;
 
-    @GetMapping(path = "/test")
-    public void test() {
-		// // Create and initialise game
-		// Game game = GameFactory.initGame("testGame", "bob");
-
-		// // Add players
-		// ArrayList<Player> players = new ArrayList<>(List.of(
-		// 	new Player("Bobby"),
-		// 	new Player("John"),
-		// 	new Player("Jopie"),
-		// 	new Player("Jookoon"),
-		// 	new Player("Blop"),
-		// 	new Player("Poopie")
-		// ));
-		// lobbySvc.addPlayers(players, game);
-
-		// // Assign Roles
-		// roleSvc.assignRoles(game);
-        // // String gameInitResponse = Json.createObjectBuilder().add("type", "GAMEINIT").add("game", game.toJson()).build().toString();
-        // JsonObject gameInitResponse = msgSvc.addType(MessageType.GAME_INIT, game.toJson());
-
-		// this.lobbySvc.getGames();
-
+    @GetMapping(path = "/ack")
+    public void getAck(@RequestParam String gameName) {
         // Test pushing game data to client
-        msgSvc.publishToTopic("gameName", "testing", MessageType.ACK);
+        msgSvc.publishToTopic(gameName, "acknowledged", MessageType.ACK);
+    }
+
+	@GetMapping(path = "/player_joined")
+    public void getPlayerJoined(@RequestParam String gameName) {
+        // Test pushing game data to client
+        msgSvc.publishToTopic(gameName, "player joined", MessageType.PLAYER_JOINED);
     }
 
     @MessageMapping("/{gameName}/ack")

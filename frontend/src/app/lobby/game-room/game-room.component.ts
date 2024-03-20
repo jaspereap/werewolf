@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Game, Player } from '../../dtos';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Game, Player } from '../../models/dtos';
 import { ActivatedRoute } from '@angular/router';
 import { LobbyStore } from '../lobby.store';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LocalStoreService } from '../../local-store.service';
+import { GameService } from '../../game.service';
+import { LobbyService } from '../lobby.service';
 
 @Component({
   selector: 'app-game-room',
@@ -12,21 +14,31 @@ import { LocalStoreService } from '../../local-store.service';
 })
 export class GameRoomComponent implements OnInit, OnDestroy{
   currentPlayer$: Observable<Player> = this.lobbyStore.currentPlayer$;
+  @Input()
   currentGame$: Observable<Game> = this.lobbyStore.currentGame$;
   gameName: string = this.route.snapshot.params['gameName'];
-  constructor(private lobbyStore: LobbyStore, private route: ActivatedRoute, private localStore: LocalStoreService) {}
   
+  // currentGamePlayers$: Observable<Player[]> = this.lobbyStore.currentGamePlayers$;
+  // currentGamePlayers$: Observable<Player[]> = this.currentGame$.pipe(map(game => game.players));
+
+  constructor(private lobbyStore: LobbyStore, 
+      private route: ActivatedRoute, 
+      private localStore: LocalStoreService,
+      private lobbyService: LobbyService) {}
   
   ngOnInit(): void {
-    console.log('Current player name: ' + this.localStore.getCurrentPlayerName())
-    this.lobbyStore.getCurrentGame([this.localStore.getCurrentPlayerName(), this.gameName]);
+    console.log('Game Room Component Init')
+    // this.currentGame$.subscribe(
+    //   (game) => {
+    //     console.log('current game: ', game)
+    //     console.log('current game players: ', game.players)
+    //   }
+    // )
+    // this.currentPlayer$.subscribe(
+    //   (player) => console.log('current player: ', player)
+    // )
 
-    this.currentGame$.subscribe(
-      (game) => console.log('current game: ', game)
-    )
-    this.currentPlayer$.subscribe(
-      (player) => console.log('current player: ', player)
-    )
+    this.lobbyService.subscribeGameRoom(this.gameName, this.localStore.getCurrentPlayerName())
   }
   
   startGame() {
@@ -41,4 +53,5 @@ export class GameRoomComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     console.log('Game Room Component Destroyed');
   }
+
 }

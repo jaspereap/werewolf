@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.Player;
-import com.nus.iss.werewolf.model.messages.GameDTO;
+import com.nus.iss.werewolf.model.messages.dtos.GameDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LobbyService {
 
-    // TODO: Mock Game db
+    // TODO: Mock Game db, pending database implementation
     List<Game> games = new ArrayList<>();
 
     public void createGame(Game game) {
