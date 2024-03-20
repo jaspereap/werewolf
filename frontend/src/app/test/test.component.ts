@@ -4,8 +4,8 @@ import { RxStompService } from '../rxStomp/rx-stomp.service';
 import { Message } from '@stomp/stompjs';
 
 import { Game } from '../models/dtos';
-import { MessageService } from '../message.service';
-import { GameService } from '../game.service';
+import { MessageService } from '../shared/message.service';
+import { GameService } from '../game/game.service';
 import { LobbyService } from '../lobby/lobby.service';
 
 @Component({

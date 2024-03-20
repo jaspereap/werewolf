@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { LobbyStore } from './lobby.store';
 import { Player } from '../models/dtos';
 import { provideComponentStore } from '@ngrx/component-store';
-import { LocalStoreService } from '../local-store.service';
-import { Observable, Subscription, map } from 'rxjs';
+import { LocalStoreService } from '../shared/local-store.service';
+import { Observable, Subscription, map, of } from 'rxjs';
 
 interface FormData {
   currentPlayerName: string,
@@ -79,6 +79,11 @@ export class LobbyComponent implements OnInit, OnDestroy{
 
   newPlayer(name: string) {
     return {playerName: name } as Player;
+  }
+  joinRoom(gameName: string) {
+    console.log("Joining room: ", gameName)
+    this.lobbyStore.joinGame(of(gameName));
+    this.lobbyStore.getGames();
   }
 }
 

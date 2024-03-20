@@ -12,7 +12,10 @@
     <button (click)="setPlayer(test.value)" style="margin-top: 5px; width:80px;">Set player</button>
 </div>
 
-<app-game-list [games]="games$ | async" [currentPlayer]="currentPlayer$ | async"></app-game-list> 
+<app-game-list [games]="games$ | async" 
+    [currentPlayer]="currentPlayer$ | async"
+    (joinRoomEvent)="joinRoom($event)">
+</app-game-list> 
 
 <h3>Create Room</h3>
 <form [formGroup]="newRoomForm">

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { RxStompService } from './rxStomp/rx-stomp.service';
+import { RxStompService } from '../rxStomp/rx-stomp.service';
 import { Observable, map, tap } from 'rxjs';
 import { Message } from '@stomp/stompjs';
-import { environment as env } from "../environments/environment";
-import { MessageType } from './models/dtos';
+import { environment as env } from "../../environments/environment";
+import { MessageType } from '../models/dtos';
 
 @Injectable({
   providedIn: 'root'

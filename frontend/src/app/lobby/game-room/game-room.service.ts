@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MessageService } from '../../message.service';
+import { MessageService } from '../../shared/message.service';
 import { LobbyStore } from '../lobby.store';
 import { MessageType, Player } from '../../models/dtos';
 

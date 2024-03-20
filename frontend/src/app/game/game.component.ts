@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameState, PhaseType, Player, PlayerState, Role } from '../models/dtos';
 import { GameStore } from './game.store';
 import { provideComponentStore } from '@ngrx/component-store';
-import { GameService } from '../game.service';
+import { GameService } from './game.service';
 import { Observable } from 'rxjs';
 
 @Component({

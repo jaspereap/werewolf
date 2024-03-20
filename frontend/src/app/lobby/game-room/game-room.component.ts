@@ -1,11 +1,11 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Game, Player, PlayerState } from '../../models/dtos';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LobbyStore } from '../lobby.store';
 import { Observable, Subscription } from 'rxjs';
-import { LocalStoreService } from '../../local-store.service';
+import { LocalStoreService } from '../../shared/local-store.service';
 import { LobbyService } from '../lobby.service';
-import { MessageService } from '../../message.service';
+import { MessageService } from '../../shared/message.service';
 import { GameRoomService } from './game-room.service';
 
 @Component({
@@ -29,7 +29,8 @@ export class GameRoomComponent implements OnInit, OnDestroy, OnChanges{
   ScurrentGame$!: Subscription
 
   constructor(private lobbyStore: LobbyStore, 
-      private route: ActivatedRoute, 
+      private route: ActivatedRoute,
+      private router: Router,
       private localStore: LocalStoreService,
       private lobbyService: LobbyService,
       private messageSvc: MessageService,
@@ -51,19 +52,17 @@ export class GameRoomComponent implements OnInit, OnDestroy, OnChanges{
     )
 
   }
-  
+
   startGame() {
     
   }
   
   leaveGame() {
     console.log("Leave Game Button")
-    this.lobbyStore.leaveGame();
+    // this.lobbyStore.leaveGame();
+    this.router.navigate(['/lobby']);
   }
 
-  testAddPlayer() {
-    this.lobbyStore.addPlayer({playerName: 'lol', playerState: PlayerState.ALIVE});
-  }
   ngOnDestroy(): void {
     console.log('Game Room Component Destroyed');
     this.SgameRoom.unsubscribe();
