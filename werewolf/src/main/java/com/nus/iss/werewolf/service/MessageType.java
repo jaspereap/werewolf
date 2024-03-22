@@ -4,5 +4,7 @@ public enum MessageType {
     ACK,
     JOIN_ROOM,
     PLAYER_JOINED,
-    PLAYER_LEFT
+    PLAYER_LEFT,
+    INIT_GAME,
+    START_GAME
 }

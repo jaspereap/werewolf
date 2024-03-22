@@ -3,7 +3,6 @@ package com.nus.iss.werewolf.model;
 import java.util.ArrayList;
 import java.util.List;
 import com.nus.iss.werewolf.model.phases.Phase;
-
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
@@ -25,7 +24,7 @@ public class Game {
         this.players = players;
         this.gameState = gameState;
     }
-    
+
     public JsonObject toJson() {
         JsonArrayBuilder playersArrayBuilder = Json.createArrayBuilder();
         for (Player player : players) {

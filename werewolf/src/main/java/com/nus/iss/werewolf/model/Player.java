@@ -1,7 +1,5 @@
 package com.nus.iss.werewolf.model;
 
-import java.util.List;
-
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import lombok.Data;

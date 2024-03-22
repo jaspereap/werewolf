@@ -1,30 +1,32 @@
 package com.nus.iss.werewolf.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
+import java.util.concurrent.TimeUnit;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MessageService {
-    @Autowired
-    private SimpMessagingTemplate msgTemplate;
+    @Autowired private WebSocketService webSocketService;
+    @Autowired private AckService ackService;
 
-    final String PREFIX_TOPIC = "/topic/";
-
-    public void publishToTopic(String topic, String data, MessageType type) {
-        String destination = PREFIX_TOPIC + topic;
-        System.out.println("\tOutbound Destination: " + destination);
-        System.out.println("\tOutbound data: " + data);
-        // Set header
-        SimpMessageHeaderAccessor header = SimpMessageHeaderAccessor.create();
-        header.setNativeHeader("type", type.toString());
-        header.setLeaveMutable(true);
-        System.out.println("\tOutbound Header: " + header.toNativeHeaderMap());
-        msgTemplate.convertAndSend(destination, data, header.getMessageHeaders());
+    public void publishToGame(String gameName, String data, MessageType type) {
+        webSocketService.publishToTopic(gameName, data, type);
     }
 
+    public void publishToGameWithAck(String gameName, String data, MessageType type, int playerCount) {
+        ackService.initAck(gameName, playerCount);
+        webSocketService.publishToTopic(gameName, data, type);
+        boolean allAcksReceived = ackService.waitForAcknowledgments(gameName, 30, TimeUnit.SECONDS);
+        if (allAcksReceived) {
+            System.out.println("All Players Acknowledged");
+        } else {
+            System.out.println("Ack Failed");
+        }
+        ackService.clearAcknowledgment(gameName);
+    }
+
+    public void publishToPlayer(String gameName, String playerName, String data, MessageType type) {
+        webSocketService.publishToTopic("%s/%s".formatted(gameName, playerName), data, type);
+    }
 }

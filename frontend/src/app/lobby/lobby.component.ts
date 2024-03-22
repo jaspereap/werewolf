@@ -83,7 +83,7 @@ export class LobbyComponent implements OnInit, OnDestroy{
   joinRoom(gameName: string) {
     console.log("Joining room: ", gameName)
     this.lobbyStore.joinGame(of(gameName));
-    this.lobbyStore.getGames();
+    // this.lobbyStore.getGames();
   }
 }
 

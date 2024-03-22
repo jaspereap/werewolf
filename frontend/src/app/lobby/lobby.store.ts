@@ -172,6 +172,23 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       )
     )
   );
+
+  readonly startGame = this.effect(trigger$ =>
+    trigger$.pipe(
+      tap(),
+      withLatestFrom(this.currentPlayer$, this.currentGame$),
+      exhaustMap(([, currentPlayer, currentGame]) =>
+        this.lobbyService.startGame(currentPlayer.playerName, currentGame.gameName).pipe(
+          tapResponse(
+            resp => {
+              console.log('startGame Server Response: ', resp)
+            },
+            err => console.error(err)
+          )
+        )
+      )
+    )  
+  )
   
   enterRoom(gameName: string, playerName: string) {
     console.log('entering room')

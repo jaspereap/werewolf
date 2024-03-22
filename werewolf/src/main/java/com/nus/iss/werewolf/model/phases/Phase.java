@@ -13,6 +13,7 @@ public abstract class Phase {
     protected PhaseType phaseType;
     protected boolean isActivated;
     
+    
     public Phase(Game game, PhaseType phaseType, boolean activated) {
         this.game = game;
         this.phaseType = phaseType;
@@ -29,5 +30,9 @@ public abstract class Phase {
 
     public boolean isActivated() {
         return isActivated;
+    }
+
+    public String toString() {
+        return phaseType.toString();
     }
 }

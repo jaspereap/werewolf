@@ -12,7 +12,7 @@ export class GameStore extends ComponentStore<GameComponentState> implements OnS
     private readonly gameState$ = this.select((state) => state.gameState).pipe(tap((gameState) => {console.log("gameState$! ",gameState)}))
     private readonly players$ = this.select((state) => state.players).pipe(tap((players) => {console.log("players$! ",players)}))
     private readonly currentPhase$ = this.select((state) => state.currentPhase).pipe(tap((currentPhase) => {console.log("currentPhase$! ",currentPhase)}))
-
+    
     // Encapsulate, bundle multiple state observable into one.
     readonly vm$ = this.select({
         // currentPlayer: this.currentPlayer$,

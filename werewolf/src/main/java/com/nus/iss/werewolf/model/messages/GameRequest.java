@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinGameRequest {
+public class GameRequest {
     String playerName;
     String gameName;
 }

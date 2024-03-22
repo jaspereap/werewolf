@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.GameState;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
 
 @Data
 public class GameDTO {
@@ -23,6 +26,17 @@ public class GameDTO {
         // this.players = game.getPlayers().stream()
         //                        .map(Player::getName) // Assuming Player class has a getName() method
         //                        .collect(Collectors.toList());
+    }
+    public JsonObject toJson() {
+        JsonArrayBuilder playersArrayBuilder = Json.createArrayBuilder();
+        for (PlayerDTO player : players) {
+            playersArrayBuilder.add(player.toJson());
+        }
+        return Json.createObjectBuilder()
+            .add("gameName", gameName)
+            .add("players", playersArrayBuilder)
+            .add("gameState", gameState.toString())
+            .build();
     }
 }
 

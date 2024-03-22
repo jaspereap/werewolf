@@ -54,7 +54,8 @@ export class GameRoomComponent implements OnInit, OnDestroy, OnChanges{
   }
 
   startGame() {
-    
+    console.log('start game pressed')
+    this.lobbyStore.startGame();
   }
   
   leaveGame() {

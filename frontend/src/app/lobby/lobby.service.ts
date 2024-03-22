@@ -30,4 +30,8 @@ export class LobbyService {
     leaveGame(playerName: string, gameName: string) {
       return this.http.post(`${env.backendUrl}/leave/${gameName}`, { playerName: playerName, gameName: gameName })
     }
+
+    startGame(playerName: string, gameName: string): Observable<Game> {
+      return this.http.post<Game>(`${env.backendUrl}/start/${gameName}`, { playerName: playerName, gameName: gameName })
+    }
 }

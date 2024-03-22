@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { GameState, PhaseType, Player, PlayerState, Role } from '../models/dtos';
+import { Game, GameState, PhaseType, Player, PlayerState, Role } from '../models/dtos';
 import { GameStore } from './game.store';
 import { provideComponentStore } from '@ngrx/component-store';
 import { GameService } from './game.service';
-import { Observable } from 'rxjs';
+import { Observable, withLatestFrom } from 'rxjs';
+import { LobbyStore } from '../lobby/lobby.store';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -12,32 +14,28 @@ import { Observable } from 'rxjs';
   providers: [provideComponentStore(GameStore)]
 })
 export class GameComponent implements OnInit {
-  currentPlayer!: Player;
-  
-  vm$ = this.gameStore.vm$;
-  gameName!: string;
-  gameState!: GameState;
-  players!: Player[];
-  currentPhase!: PhaseType;
 
-  constructor(private gameSvc: GameService, private gameStore: GameStore) {}
+  constructor(private gameSvc: GameService, 
+    private gameStore: GameStore, 
+    private lobbyStore: LobbyStore,
+    private route: ActivatedRoute) {}
+
+  gameName: string = this.route.snapshot.params['gameName'];
+
+  currentPlayer$: Observable<Player> = this.lobbyStore.currentPlayer$;
+  currentGame$: Observable<Game> = this.lobbyStore.currentGame$;
 
   ngOnInit(): void {
-    console.log('Main Game Initialised!');
-    this.currentPlayer = { playerName: 'bob', playerState: PlayerState.ALIVE, role: undefined } as Player;
+    console.log('Game Initialised!');
 
-    // Subscribe to component store observable, update state
-    this.vm$.subscribe(
-      (state) => {
-        this.gameName = state.gameName;
-        this.currentPhase = state.currentPhase;
-        this.gameState = state.gameState;
-        this.players = state.players;
-        // this.currentPlayer = state.currentPlayer
+    this.currentPlayer$.pipe(withLatestFrom(this.currentGame$)).subscribe(
+      ([player, game]) => {
+        console.log('Current player: ', player.playerName);
+        console.log('Current Game: ', game.gameName);
+        this.gameSvc.subscribeGameRoom(game.gameName, player.playerName)
+        this.gameSvc.subscribeToPlayer(game.gameName, player.playerName)
       }
     )
-    // Subscribe to server for game updates
-    // this.gameSvc.subscribeGame(this.gameName, this.currentPlayer.playerName);
   }
 
   setPhaseButton() {

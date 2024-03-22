@@ -10,10 +10,7 @@ import com.nus.iss.werewolf.service.LobbyService;
 import com.nus.iss.werewolf.service.MessageService;
 import com.nus.iss.werewolf.service.RoleService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @SpringBootApplication
-@Slf4j
 public class WerewolfApplication implements CommandLineRunner {
 	@Autowired
 	GameService gameSvc;

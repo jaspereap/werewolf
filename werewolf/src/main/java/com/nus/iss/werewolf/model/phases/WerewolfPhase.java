@@ -1,11 +1,14 @@
 package com.nus.iss.werewolf.model.phases;
 
 import com.nus.iss.werewolf.model.Game;
+import com.nus.iss.werewolf.service.GameService;
 
 public class WerewolfPhase extends Phase {
-    
-    public WerewolfPhase(Game game) {
+    @SuppressWarnings("unused")
+    private GameService gameService;
+    public WerewolfPhase(Game game, GameService gameService) {
         super(game, PhaseType.WEREWOLF, true);
+        this.gameService = gameService;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.nus.iss.werewolf.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nus.iss.werewolf.model.Game;
-import com.nus.iss.werewolf.model.GameState;
 import com.nus.iss.werewolf.model.Player;
-import com.nus.iss.werewolf.model.messages.CreateGameRequest;
-import com.nus.iss.werewolf.model.messages.JoinGameRequest;
+import com.nus.iss.werewolf.model.messages.GameRequest;
 import com.nus.iss.werewolf.model.messages.dtos.GameDTO;
 import com.nus.iss.werewolf.model.messages.dtos.PlayerDTO;
+import com.nus.iss.werewolf.service.GameFactory;
 import com.nus.iss.werewolf.service.LobbyService;
 import com.nus.iss.werewolf.service.MessageService;
 import com.nus.iss.werewolf.service.MessageType;
@@ -37,14 +35,16 @@ public class LobbyController {
     @Autowired
     private MessageService msgSvc;
 
+    @Autowired
+    private GameFactory gameFactory;
+
     @PostMapping(path= "/create")
-    public ResponseEntity<GameDTO> postCreateGame(@RequestBody CreateGameRequest request) {
+    public ResponseEntity<GameDTO> postCreateGame(@RequestBody GameRequest request) {
         System.out.println("Post Create Game Controller");
         System.out.println("\tCreated Game Name: " + request.getGameName());
         System.out.println("\tCreator Player Name: " + request.getPlayerName());
 
-        Player player = new Player(request.getPlayerName());
-        Game game = new Game(request.getGameName(), new ArrayList<>(List.of(player)), GameState.CREATED);
+        Game game = gameFactory.initGame(request.getGameName(), request.getPlayerName());
         lobbySvc.createGame(game);
         return ResponseEntity.ok(new GameDTO(game));
     }
@@ -57,17 +57,18 @@ public class LobbyController {
     }
 
     @PostMapping(path = "/room/{gameName}")
-    public ResponseEntity<GameDTO> postGameDetail(@PathVariable String gameName, @RequestBody CreateGameRequest request) {
+    public ResponseEntity<String> postGameDetail(@PathVariable String gameName, @RequestBody GameRequest request) {
         System.out.println("Post Game Detail Controller");
         Optional<GameDTO> retrievedGame = this.lobbySvc.getGame(request.getGameName(), request.getPlayerName());
         if (retrievedGame.isEmpty()) {
             System.out.println("Game doesn't exist");
+            return ResponseEntity.badRequest().body("{'message':'FAIL'}");
         }
-        return ResponseEntity.ok(retrievedGame.get());
+        return ResponseEntity.ok(retrievedGame.get().toJson().toString());
     }
 
     @PostMapping(path = "/join/{gameName}")
-    public ResponseEntity<GameDTO> postJoinGame(@PathVariable String gameName, @RequestBody JoinGameRequest request) {
+    public ResponseEntity<String> postJoinGame(@PathVariable String gameName, @RequestBody GameRequest request) {
         System.out.println("Post Join Room");
         System.out.println("\tGame Name: " + request.getGameName() + " Player Name: " + request.getPlayerName());
         // TODO: Get player object
@@ -76,15 +77,16 @@ public class LobbyController {
         Optional<Game> joinedGame = lobbySvc.joinGame(gameName, request.getPlayerName());
         if (joinedGame.isEmpty()) {
             System.out.println("\tJOIN GAME FAILED!");
+            return ResponseEntity.badRequest().body("{'message':'FAIL'}");
         }
         // Broadcast room join
         System.out.println(playerDTO.toString());
-        msgSvc.publishToTopic(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
-        return ResponseEntity.ok(new GameDTO(joinedGame.get()));
+        msgSvc.publishToGame(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
+        return ResponseEntity.ok(new GameDTO(joinedGame.get()).toJson().toString());
     }
 
     @PostMapping(path = "/leave/{gameName}")
-    public ResponseEntity<String> postLeaveGame(@PathVariable String gameName, @RequestBody JoinGameRequest request) {
+    public ResponseEntity<String> postLeaveGame(@PathVariable String gameName, @RequestBody GameRequest request) {
         System.out.println("Post Leave Game Controller");
         // TODO: Get player object
         Player player = new Player(request.getPlayerName());
@@ -93,7 +95,7 @@ public class LobbyController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'message':'FAIL'}");
         }
         // Broadcast room leave
-        msgSvc.publishToTopic(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_LEFT);
+        msgSvc.publishToGame(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_LEFT);
         return ResponseEntity.ok("{\"message\":\"SUCCESS\"}");
     }
 }

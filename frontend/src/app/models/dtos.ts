@@ -59,5 +59,7 @@ export enum MessageType {
     ACK = 'ACK',
     JOIN_ROOM = 'JOIN_ROOM',
     PLAYER_JOINED = 'PLAYER_JOINED',
-    PLAYER_LEFT = 'PLAYER_LEFT'
+    PLAYER_LEFT = 'PLAYER_LEFT',
+    INIT_GAME = 'INIT_GAME',
+    START_GAME = 'START_GAME'
 }

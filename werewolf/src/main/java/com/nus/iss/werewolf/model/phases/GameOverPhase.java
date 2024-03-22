@@ -1,16 +1,14 @@
 package com.nus.iss.werewolf.model.phases;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.Role;
 import com.nus.iss.werewolf.service.GameService;
 
 public class GameOverPhase extends Phase {
-    @Autowired
-    GameService gameSvc;
-    public GameOverPhase(Game game) {
+    private GameService gameService;
+    public GameOverPhase(Game game, GameService gameService) {
         super(game, PhaseType.GAMEOVER, false);
+        this.gameService = gameService;
     }
 
     @Override
@@ -20,7 +18,7 @@ public class GameOverPhase extends Phase {
     }
 
     public Role getWinner() {
-        if (gameSvc.isAllVillagersDead(game)) {
+        if (gameService.isAllVillagersDead(game)) {
             return Role.WEREWOLF;
         }
         return Role.VILLAGER;

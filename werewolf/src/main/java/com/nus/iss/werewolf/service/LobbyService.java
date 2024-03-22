@@ -1,15 +1,16 @@
 package com.nus.iss.werewolf.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nus.iss.werewolf.model.Game;
 import com.nus.iss.werewolf.model.Player;
 import com.nus.iss.werewolf.model.messages.dtos.GameDTO;
+import com.nus.iss.werewolf.repository.GameRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,36 +18,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LobbyService {
 
-    // TODO: Mock Game db, pending database implementation
-    List<Game> games = new ArrayList<>();
+    @Autowired GameRepository gameRepo;
+    
+    public List<Game> showGames() {
+        return gameRepo.getGames();
+    }
 
     public void createGame(Game game) {
-        games.add(game);
+        gameRepo.addGame(game);
         log.debug("Game Created");
-        System.out.println(games.getFirst());
+        System.out.println(gameRepo.getGames().getFirst());
     }
 
     public List<GameDTO> getGames() {
-        log.debug("\tCurrent games: \n" + games);
-        return games.stream().map(GameDTO::new).collect(Collectors.toList());
+        log.debug("\tCurrent games: \n" + gameRepo.getGames());
+        return gameRepo.getGames().stream().map(GameDTO::new).collect(Collectors.toList());
     }
 
     public Optional<GameDTO> getGame(String gameName, String playerName) {
-        return games.stream()
+        return gameRepo.getGames().stream()
             .filter(game -> game.getGameName().equals(gameName))
             .map(GameDTO::new)
             .findFirst();
     }
 
     public Optional<Game> joinGame(String gameName, String playerName) {
-        return games.stream()
+        return gameRepo.getGames().stream()
             .filter(x -> x.getGameName().equals(gameName))
             .peek(game -> addPlayer(game, playerName))
             .findFirst();
     }
     
     public boolean leaveGame(String gameName, String playerName) {
-        for (Game game : games) {
+        for (Game game : gameRepo.getGames()) {
             if (game.getGameName().equals(gameName)) {
                 boolean exists = game.getPlayers().stream().anyMatch(player -> player.getPlayerName().equals(playerName));
                 if (exists) {
@@ -61,9 +65,6 @@ public class LobbyService {
         System.out.println("Game " + gameName + " not found");
         return false;
     }
-    
-
-
 
     private boolean addPlayer(Game game, String playerName) {
         // TODO: Retrieve player
