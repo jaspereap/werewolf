@@ -20,9 +20,9 @@ public class GameRepository {
         this.games.add(game);
     }
 
-    public Optional<Game> getGame(String gameName) {
+    public Optional<Game> getGame(String gameId) {
         return games.stream()
-            .filter(game -> game.getGameName().equals(gameName))
+            .filter(game -> game.getGameId().equals(gameId))
             .findFirst();
     }
 }

@@ -11,10 +11,10 @@ import { triggerLeaveRoom } from './lobby/lobby.guard';
 const routes: Routes = [
   {path: '', component: AppComponent},
   {path: 'test', component: TestComponent},
-  {path: 'game/:gameName', component: GameComponent},
+  {path: 'game/:gameId', component: GameComponent},
   {path: 'lobby', component: LobbyComponent, canActivate: [authGuard]},
   {
-    path: 'room/:gameName', component: GameRoomComponent,
+    path: 'room/:gameId', component: GameRoomComponent,
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard], 
     canDeactivate: [triggerLeaveRoom]

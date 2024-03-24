@@ -20,7 +20,7 @@ export class GameComponent implements OnInit {
     private lobbyStore: LobbyStore,
     private route: ActivatedRoute) {}
 
-  gameName: string = this.route.snapshot.params['gameName'];
+  gameId: string = this.route.snapshot.params['gameId'];
 
   currentPlayer$: Observable<Player> = this.lobbyStore.currentPlayer$;
   currentGame$: Observable<Game> = this.lobbyStore.currentGame$;
@@ -31,9 +31,9 @@ export class GameComponent implements OnInit {
     this.currentPlayer$.pipe(withLatestFrom(this.currentGame$)).subscribe(
       ([player, game]) => {
         console.log('Current player: ', player.playerName);
-        console.log('Current Game: ', game.gameName);
-        this.gameSvc.subscribeGameRoom(game.gameName, player.playerName)
-        this.gameSvc.subscribeToPlayer(game.gameName, player.playerName)
+        console.log('Current Game: ', game.gameId);
+        this.gameSvc.subscribeGameRoom(game.gameId, player.playerName)
+        this.gameSvc.subscribeToPlayer(game.gameId, player.playerName)
       }
     )
   }

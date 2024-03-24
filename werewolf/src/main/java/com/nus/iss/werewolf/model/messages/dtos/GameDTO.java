@@ -14,10 +14,12 @@ import jakarta.json.JsonObject;
 @Data
 public class GameDTO {
     private String gameName;
+    private String gameId;
     private List<PlayerDTO> players;
     private GameState gameState;
 
     public GameDTO(Game game) {
+        this.gameId = game.getGameId();
         this.gameName = game.getGameName();
         this.gameState = game.getGameState();
         this.players = game.getPlayers().stream()
@@ -36,6 +38,7 @@ public class GameDTO {
             .add("gameName", gameName)
             .add("players", playersArrayBuilder)
             .add("gameState", gameState.toString())
+            .add("gameId", gameId)
             .build();
     }
 }

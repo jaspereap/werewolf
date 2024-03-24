@@ -9,8 +9,8 @@ export class GameRoomService {
 
   constructor(private messageSvc: MessageService, private lobbyStore: LobbyStore, private router: Router) { }
   // Listen for player join/leave, game start
-  subscribeGameRoom(gameName: string, playerName: string) {
-    return this.messageSvc.subscribe(gameName).subscribe(
+  subscribeGameRoom(gameId: string, playerName: string) {
+    return this.messageSvc.subscribe(gameId).subscribe(
         ({headers, body}) => {
 
             switch(headers['type'] as MessageType) {
@@ -36,8 +36,8 @@ export class GameRoomService {
               }
               case MessageType.INIT_GAME: {
                 console.log('Init_game GAME message received')
-                this.publishAck(gameName, playerName, MessageType.INIT_GAME)
-                this.router.navigate(['/game', gameName])
+                this.publishAck(gameId, playerName, MessageType.INIT_GAME)
+                this.router.navigate(['/game', gameId])
                 break;
               }
             }

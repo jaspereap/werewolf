@@ -15,7 +15,7 @@ import { GameRoomService } from './game-room.service';
   providers: [GameRoomService]
 })
 export class GameRoomComponent implements OnInit, OnDestroy, OnChanges{
-  gameName: string = this.route.snapshot.params['gameName'];
+  gameId: string = this.route.snapshot.params['gameId'];
 
   currentPlayer$: Observable<Player> = this.lobbyStore.currentPlayer$;
   currentGame$: Observable<Game> = this.lobbyStore.currentGame$;
@@ -47,7 +47,7 @@ export class GameRoomComponent implements OnInit, OnDestroy, OnChanges{
     this.ScurrentPlayer$ = this.currentPlayer$.subscribe(
       (player) => {
         console.log('current player: ', player)
-        this.SgameRoom = this.gameRoomService.subscribeGameRoom(this.gameName, player.playerName)
+        this.SgameRoom = this.gameRoomService.subscribeGameRoom(this.gameId, player.playerName)
       }
     )
 

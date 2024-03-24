@@ -35,34 +35,34 @@ public class LobbyService {
         return gameRepo.getGames().stream().map(GameDTO::new).collect(Collectors.toList());
     }
 
-    public Optional<GameDTO> getGame(String gameName, String playerName) {
+    public Optional<GameDTO> getGame(String gameId, String playerName) {
         return gameRepo.getGames().stream()
-            .filter(game -> game.getGameName().equals(gameName))
+            .filter(game -> game.getGameId().equals(gameId))
             .map(GameDTO::new)
             .findFirst();
     }
 
-    public Optional<Game> joinGame(String gameName, String playerName) {
+    public Optional<Game> joinGame(String gameId, String playerName) {
         return gameRepo.getGames().stream()
-            .filter(x -> x.getGameName().equals(gameName))
+            .filter(x -> x.getGameId().equals(gameId))
             .peek(game -> addPlayer(game, playerName))
             .findFirst();
     }
     
-    public boolean leaveGame(String gameName, String playerName) {
+    public boolean leaveGame(String gameId, String playerName) {
         for (Game game : gameRepo.getGames()) {
-            if (game.getGameName().equals(gameName)) {
+            if (game.getGameId().equals(gameId)) {
                 boolean exists = game.getPlayers().stream().anyMatch(player -> player.getPlayerName().equals(playerName));
                 if (exists) {
                     game.getPlayers().removeIf(player -> player.getPlayerName().equals(playerName));
                     return true;
                 } else {
-                    System.out.println("Player " + playerName + " not found in game " + gameName);
+                    System.out.println("Player " + playerName + " not found in game " + gameId);
                     return false;
                 }
             }
         }
-        System.out.println("Game " + gameName + " not found");
+        System.out.println("Game " + gameId + " not found");
         return false;
     }
 

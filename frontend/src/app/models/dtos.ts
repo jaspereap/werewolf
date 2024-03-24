@@ -1,11 +1,13 @@
 export interface Game {
     gameName: string,
     gameState: GameState
-    players: Player[]
+    players: Player[],
+    gameId: string
 }
 
 export interface Player {
     playerName: string,
+    playerId: string,
     playerState: PlayerState
 }
 
@@ -48,11 +50,13 @@ export interface GameComponentState {
     gameState: GameState;
     players: Player[];
     currentPhase: PhaseType;
+    gameId: string;
 }
 // HTTP
 export interface CreateGameRequest {
     gameName: string;
     playerName: string;
+    playerId: string;
 }
 
 export enum MessageType {

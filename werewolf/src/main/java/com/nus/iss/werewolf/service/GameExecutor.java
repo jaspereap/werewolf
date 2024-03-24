@@ -30,10 +30,10 @@ public class GameExecutor {
             try {
                 // Broadcast Init_game
                 // msgService.publishToGame(game.getGameName(), "", MessageType.INIT_GAME);
-                msgService.publishToGameWithAck(game.getGameName(), "", MessageType.INIT_GAME, game.getPlayers().size());
+                msgService.publishToGameWithAck(game.getGameId(), "", MessageType.INIT_GAME, game.getPlayers().size());
                 Thread.sleep(1000);
                 // Broadcast Start_game
-                msgService.publishToGameWithAck(game.getGameName(), "", MessageType.START_GAME, game.getPlayers().size());
+                msgService.publishToGameWithAck(game.getGameId(), "", MessageType.START_GAME, game.getPlayers().size());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

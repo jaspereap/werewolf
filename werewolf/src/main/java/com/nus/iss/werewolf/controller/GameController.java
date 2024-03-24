@@ -29,10 +29,10 @@ public class GameController {
     @Autowired GameExecutor gameExecutor;
     @Autowired AckService ackService;
 
-    @PostMapping(path = "/start/{gameName}")
-    public ResponseEntity<String> postStartGame(@PathVariable String gameName, @RequestBody GameRequest request) {
+    @PostMapping(path = "/start/{gameId}")
+    public ResponseEntity<String> postStartGame(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Start Game Controller");
-        Optional<Game> startedGame = gameRepo.getGame(gameName);
+        Optional<Game> startedGame = gameRepo.getGame(gameId);
         if (startedGame.isEmpty()) {
             return ResponseEntity.badRequest().body("{'message':'FAIL'}");
         }
@@ -41,17 +41,17 @@ public class GameController {
     }
 
     // Acknowledges by GameName and MessageType
-    @MessageMapping("/{gameName}/{playerName}/ack")
-    public void playerAck(@DestinationVariable String gameName, 
+    @MessageMapping("/{gameId}/{playerName}/ack")
+    public void playerAck(@DestinationVariable String gameId, 
         @DestinationVariable String playerName, 
         @Payload String body, 
         SimpMessageHeaderAccessor header) {
-        System.out.printf("\tInbound Ack: \n\tgameName: %s \n\tplayerName: %s \n\tBody: %s\n", gameName, playerName, body);
+        System.out.printf("\tInbound Ack: \n\tgameId: %s \n\tplayerName: %s \n\tBody: %s\n", gameId, playerName, body);
         System.out.println("\tInbound Headers: " + header.getFirstNativeHeader("type"));
         String type = header.getFirstNativeHeader("type");
 
-        if (ackService.hasGame(gameName, type)) {
-            ackService.acknowledgePlayer(gameName, type);
+        if (ackService.hasGame(gameId, type)) {
+            ackService.acknowledgePlayer(gameId, type);
         } else {
             System.out.println("Game does not exist in AckService");
         }

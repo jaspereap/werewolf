@@ -10,28 +10,28 @@ public class MessageService {
     @Autowired private WebSocketService webSocketService;
     @Autowired private AckService ackService;
 
-    public void publishToGame(String gameName, String data, MessageType type) {
-        webSocketService.publishToTopic(gameName, data, type);
+    public void publishToGame(String gameId, String data, MessageType type) {
+        webSocketService.publishToTopic(gameId, data, type);
     }
 
-    public boolean publishToGameWithAck(String gameName, String data, MessageType type, int playerCount) {
+    public boolean publishToGameWithAck(String gameId, String data, MessageType type, int playerCount) {
         // Initialise acknowledgement
-        ackService.initAck(gameName, type, playerCount);
+        ackService.initAck(gameId, type, playerCount);
         // Broadcast to clients
-        webSocketService.publishToTopic(gameName, data, type);
+        webSocketService.publishToTopic(gameId, data, type);
         // Retrieve ack from clients
-        boolean allAcksReceived = ackService.waitForAcknowledgments(gameName, type, 30, TimeUnit.SECONDS);
+        boolean allAcksReceived = ackService.waitForAcknowledgments(gameId, type, 30, TimeUnit.SECONDS);
         if (allAcksReceived) {
             System.out.println("All Players Acknowledged: " + type.toString());
             return true;
         }
-        ackService.clearAcknowledgment(gameName, type);
+        ackService.clearAcknowledgment(gameId, type);
         System.out.println("Failed to Acknowledged in time");
         return false;
     }
 
-    public void publishToPlayer(String gameName, String playerName, String data, MessageType type) {
-        webSocketService.publishToTopic("%s/%s".formatted(gameName, playerName), data, type);
+    public void publishToPlayer(String gameId, String playerName, String data, MessageType type) {
+        webSocketService.publishToTopic("%s/%s".formatted(gameId, playerName), data, type);
     }
 
 }

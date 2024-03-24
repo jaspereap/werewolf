@@ -94,8 +94,8 @@ export class LobbyStore extends ComponentStore<LobbyState> {
   readonly getCurrentGame = this.effect((trigger$: Observable<[string, string]>) => 
     trigger$.pipe(
       tap(() => console.log('getGame triggered')),
-      exhaustMap(([playerName, gameName]) => 
-        this.lobbyService.getCurrentGame(playerName, gameName).pipe(
+      exhaustMap(([playerName, gameId]) => 
+        this.lobbyService.getCurrentGame(playerName, gameId).pipe(
           tapResponse(
             response => {
               console.log('getGame Server Response: ', response);
@@ -124,7 +124,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
                   // Set current game to created game
                   this.setCurrentGame(game);
                   // Route to created game room
-                  this.enterRoom(gameName, currentPlayer.playerName)
+                  this.enterRoom(game.gameId, currentPlayer.playerName)
                 },
                 (error) => console.error(error)
               )
@@ -134,18 +134,18 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       )
     ));
 // For joining a game
-  readonly joinGame = this.effect((gameName$: Observable<string>) => 
-    gameName$.pipe(
+  readonly joinGame = this.effect((gameId$: Observable<string>) => 
+    gameId$.pipe(
       withLatestFrom(this.currentPlayer$),
       tap(() => console.log('joinGame triggered')),
-      exhaustMap(([gameName, currentPlayer]) => 
-      this.lobbyService.joinGame(currentPlayer.playerName, gameName).pipe(
+      exhaustMap(([gameId, currentPlayer]) => 
+      this.lobbyService.joinGame(currentPlayer.playerName, gameId).pipe(
         tapResponse(
           resp => {
             console.log('joinGame Server Response: ', resp);
             this.setCurrentGame(resp);
             // Route to room
-            this.enterRoom(gameName, currentPlayer.playerName);
+            this.enterRoom(gameId, currentPlayer.playerName);
           },
           error => console.error(error)
         )
@@ -159,7 +159,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       tap(() => console.log('leaveGame triggered')),
       withLatestFrom(this.currentPlayer$, this.currentGame$),
       exhaustMap(([,currentPlayer, currentGame]) => 
-        this.lobbyService.leaveGame(currentPlayer.playerName, currentGame.gameName).pipe(
+        this.lobbyService.leaveGame(currentPlayer.playerName, currentGame.gameId).pipe(
           tapResponse(
             resp => {
               console.log('leaveGame Server Response: ', resp);
@@ -178,7 +178,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       tap(),
       withLatestFrom(this.currentPlayer$, this.currentGame$),
       exhaustMap(([, currentPlayer, currentGame]) =>
-        this.lobbyService.startGame(currentPlayer.playerName, currentGame.gameName).pipe(
+        this.lobbyService.startGame(currentPlayer.playerName, currentGame.gameId).pipe(
           tapResponse(
             resp => {
               console.log('startGame Server Response: ', resp)
@@ -190,10 +190,10 @@ export class LobbyStore extends ComponentStore<LobbyState> {
     )  
   )
   
-  enterRoom(gameName: string, playerName: string) {
+  enterRoom(gameId: string, playerName: string) {
     console.log('entering room')
     // Route to room
-    this.router.navigate(['/room', gameName]);
+    this.router.navigate(['/room', gameId]);
   }
   deleteGame() {}
 }

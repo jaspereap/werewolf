@@ -19,23 +19,23 @@ import java.util.concurrent.TimeUnit;
 public class AckService {
     private final Map<List<String>, CountDownLatch> gameAckLatches = new ConcurrentHashMap<>();
 
-    public void initAck(String gameName, MessageType type, int responseCount) {
-        System.out.printf("initAck -> inject %s, %s into gameAckLatches\n", gameName, type.toString());
-        List<String> key = toKey(gameName, type.toString());
+    public void initAck(String gameId, MessageType type, int responseCount) {
+        System.out.printf("initAck -> inject %s, %s into gameAckLatches\n", gameId, type.toString());
+        List<String> key = toKey(gameId, type.toString());
         if (gameAckLatches.containsKey(key)) {
-            clearAcknowledgment(gameName, type);
+            clearAcknowledgment(gameId, type);
         }
         gameAckLatches.put(key, new CountDownLatch(responseCount));
         System.out.println(gameAckLatches);
     }
 
-    public boolean hasGame(String gameName, String type) {
-        return gameAckLatches.containsKey(toKey(gameName, type));
+    public boolean hasGame(String gameId, String type) {
+        return gameAckLatches.containsKey(toKey(gameId, type));
     }
 
-    public boolean waitForAcknowledgments(String gameName, MessageType type, long timeout, TimeUnit unit) {
+    public boolean waitForAcknowledgments(String gameId, MessageType type, long timeout, TimeUnit unit) {
         System.out.println("Waiting for acks.........");
-        CountDownLatch latch = gameAckLatches.get(toKey(gameName, type.toString()));
+        CountDownLatch latch = gameAckLatches.get(toKey(gameId, type.toString()));
         System.out.println(gameAckLatches);
 
         try {
@@ -47,8 +47,8 @@ public class AckService {
         }
     }
 
-    public void acknowledgePlayer(String gameName, String type) {
-        CountDownLatch latch = gameAckLatches.get(toKey(gameName, type));
+    public void acknowledgePlayer(String gameId, String type) {
+        CountDownLatch latch = gameAckLatches.get(toKey(gameId, type));
         if (latch != null) {
             latch.countDown();
             // Optionally log the acknowledgment or notify other parts of the system
@@ -57,8 +57,8 @@ public class AckService {
         }
     }
 
-    public void clearAcknowledgment(String gameName, MessageType type) {
-        gameAckLatches.remove(toKey(gameName, gameName));
+    public void clearAcknowledgment(String gameId, MessageType type) {
+        gameAckLatches.remove(toKey(gameId, type.toString()));
     }
     
     // @MessageMapping("/{gameName}/{playerName}/ack")
@@ -75,7 +75,7 @@ public class AckService {
     //     }
     // }
 
-    public List<String> toKey(String gameName, String type) {
-        return new ArrayList<String>(Arrays.asList(gameName, type));
+    public List<String> toKey(String gameId, String type) {
+        return new ArrayList<String>(Arrays.asList(gameId, type));
     }
 }

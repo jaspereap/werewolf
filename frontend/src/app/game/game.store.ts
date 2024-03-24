@@ -28,7 +28,8 @@ export class GameStore extends ComponentStore<GameComponentState> implements OnS
             gameName: 'Default',
             gameState: GameState.CREATED,
             players: [],
-            currentPhase: PhaseType.INIT
+            currentPhase: PhaseType.INIT,
+            gameId: ''
         })
     }
     ngrxOnStoreInit(): void {

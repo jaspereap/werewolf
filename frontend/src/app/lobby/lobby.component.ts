@@ -78,7 +78,7 @@ export class LobbyComponent implements OnInit, OnDestroy{
   }
 
   newPlayer(name: string) {
-    return {playerName: name } as Player;
+    return {playerName: name} as Player;
   }
   joinRoom(gameName: string) {
     console.log("Joining room: ", gameName)

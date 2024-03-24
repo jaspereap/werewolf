@@ -56,10 +56,10 @@ public class LobbyController {
         return ResponseEntity.ok(games);
     }
 
-    @PostMapping(path = "/room/{gameName}")
-    public ResponseEntity<String> postGameDetail(@PathVariable String gameName, @RequestBody GameRequest request) {
+    @PostMapping(path = "/room/{gameId}")
+    public ResponseEntity<String> postGameDetail(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Game Detail Controller");
-        Optional<GameDTO> retrievedGame = this.lobbySvc.getGame(request.getGameName(), request.getPlayerName());
+        Optional<GameDTO> retrievedGame = this.lobbySvc.getGame(request.getGameId(), request.getPlayerName());
         if (retrievedGame.isEmpty()) {
             System.out.println("Game doesn't exist");
             return ResponseEntity.badRequest().body("{'message':'FAIL'}");
@@ -67,35 +67,35 @@ public class LobbyController {
         return ResponseEntity.ok(retrievedGame.get().toJson().toString());
     }
 
-    @PostMapping(path = "/join/{gameName}")
-    public ResponseEntity<String> postJoinGame(@PathVariable String gameName, @RequestBody GameRequest request) {
+    @PostMapping(path = "/join/{gameId}")
+    public ResponseEntity<String> postJoinGame(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Join Room");
-        System.out.println("\tGame Name: " + request.getGameName() + " Player Name: " + request.getPlayerName());
+        System.out.println("\tGame Id: " + request.getGameId() + " Player Name: " + request.getPlayerName());
         // TODO: Get player object
         Player player = new Player(request.getPlayerName());
         PlayerDTO playerDTO = new PlayerDTO(player);
-        Optional<Game> joinedGame = lobbySvc.joinGame(gameName, request.getPlayerName());
+        Optional<Game> joinedGame = lobbySvc.joinGame(gameId, request.getPlayerName());
         if (joinedGame.isEmpty()) {
             System.out.println("\tJOIN GAME FAILED!");
             return ResponseEntity.badRequest().body("{'message':'FAIL'}");
         }
         // Broadcast room join
         System.out.println(playerDTO.toString());
-        msgSvc.publishToGame(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
+        msgSvc.publishToGame(gameId, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
         return ResponseEntity.ok(new GameDTO(joinedGame.get()).toJson().toString());
     }
 
-    @PostMapping(path = "/leave/{gameName}")
-    public ResponseEntity<String> postLeaveGame(@PathVariable String gameName, @RequestBody GameRequest request) {
+    @PostMapping(path = "/leave/{gameId}")
+    public ResponseEntity<String> postLeaveGame(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Leave Game Controller");
         // TODO: Get player object
         Player player = new Player(request.getPlayerName());
         PlayerDTO playerDTO = new PlayerDTO(player);
-        if (!this.lobbySvc.leaveGame(gameName, request.getPlayerName())) {
+        if (!this.lobbySvc.leaveGame(gameId, request.getPlayerName())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'message':'FAIL'}");
         }
         // Broadcast room leave
-        msgSvc.publishToGame(gameName, playerDTO.toJson().toString(), MessageType.PLAYER_LEFT);
+        msgSvc.publishToGame(gameId, playerDTO.toJson().toString(), MessageType.PLAYER_LEFT);
         return ResponseEntity.ok("{\"message\":\"SUCCESS\"}");
     }
 }

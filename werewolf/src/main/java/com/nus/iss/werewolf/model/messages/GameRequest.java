@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class GameRequest {
     String playerName;
     String gameName;
+    String gameId;
 }
