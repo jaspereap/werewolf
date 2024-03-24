@@ -42,22 +42,28 @@ public class LobbyService {
             .findFirst();
     }
 
-    public Optional<Game> joinGame(String gameId, String playerName) {
+    public Optional<Game> joinGame(String gameId, Player player) {
         return gameRepo.getGames().stream()
             .filter(x -> x.getGameId().equals(gameId))
-            .peek(game -> addPlayer(game, playerName))
+            .peek(game -> addPlayer(game, player))
             .findFirst();
     }
+    // public Optional<Game> joinGame(String gameId, String playerId) {
+    //     return gameRepo.getGames().stream()
+    //         .filter(x -> x.getGameId().equals(gameId))
+    //         .peek(game -> addPlayer(game, playerId))
+    //         .findFirst();
+    // }
     
-    public boolean leaveGame(String gameId, String playerName) {
+    public boolean leaveGame(String gameId, Player player) {
         for (Game game : gameRepo.getGames()) {
             if (game.getGameId().equals(gameId)) {
-                boolean exists = game.getPlayers().stream().anyMatch(player -> player.getPlayerName().equals(playerName));
+                boolean exists = game.getPlayers().stream().anyMatch(currentPlayer -> currentPlayer.getPlayerId().equals(player.getPlayerId()));
                 if (exists) {
-                    game.getPlayers().removeIf(player -> player.getPlayerName().equals(playerName));
+                    game.getPlayers().removeIf(currentPlayer -> currentPlayer.getPlayerName().equals(player.getPlayerId()));
                     return true;
                 } else {
-                    System.out.println("Player " + playerName + " not found in game " + gameId);
+                    System.out.println("Player " + player + " not found in game " + gameId);
                     return false;
                 }
             }
@@ -66,9 +72,9 @@ public class LobbyService {
         return false;
     }
 
-    private boolean addPlayer(Game game, String playerName) {
+    private boolean addPlayer(Game game, Player player) {
         // TODO: Retrieve player
-        Player player = new Player(playerName);
+        // Player player = new Player(playerName);
         return game.getPlayers().add(player);
     }
     

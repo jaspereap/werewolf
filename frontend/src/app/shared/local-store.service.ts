@@ -8,11 +8,15 @@ export class LocalStoreService {
 
   constructor() { }
 
-  saveCurrentPlayerName(playerName: string) {
+  saveCurrentPlayer(playerName: string, playerId: string) {
     sessionStorage.setItem('playerName', playerName);
+    sessionStorage.setItem('playerId', playerId);
   }
   
-  getCurrentPlayerName() : string {
-    return sessionStorage.getItem('playerName') ?? '';
+  getCurrentPlayer() {
+    return {
+      playerName: sessionStorage.getItem('playerName') ?? '', 
+      playerId: sessionStorage.getItem('playerId') ?? ''
+    }
   }
 }

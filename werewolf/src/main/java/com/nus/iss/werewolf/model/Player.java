@@ -20,6 +20,14 @@ public class Player {
         this.playerState = PlayerState.ALIVE;
     }
 
+    // Temp
+    public Player(String playerName, String playerId) {
+        this.playerName = playerName;
+        this.playerId = playerId;
+        this.role = Role.VILLAGER;
+        this.playerState = PlayerState.ALIVE;
+    }
+
     public void killPlayer() {
         this.playerState = PlayerState.DEAD;
         System.out.println("\t" + playerName + " has been killed!" + " (" + role + ")");

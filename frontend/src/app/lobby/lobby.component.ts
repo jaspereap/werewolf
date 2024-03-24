@@ -1,10 +1,11 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { LobbyStore } from './lobby.store';
-import { Player } from '../models/dtos';
+import { Player, PlayerState } from '../models/dtos';
 import { provideComponentStore } from '@ngrx/component-store';
 import { LocalStoreService } from '../shared/local-store.service';
 import { Observable, Subscription, map, of } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 
 interface FormData {
   currentPlayerName: string,
@@ -20,8 +21,8 @@ export class LobbyComponent implements OnInit, OnDestroy{
   newRoomForm!: FormGroup;
   // States
   currentPlayer$ = this.lobbyStore.currentPlayer$;
-  games$ = this.lobbyStore.games$;
   currentGame$ = this.lobbyStore.currentGame$;
+  games$ = this.lobbyStore.games$;
   // State Checks
   isCurrentPlayerSet$: Observable<boolean> = this.currentPlayer$.pipe(
     map(player => !!player.playerName)
@@ -31,7 +32,9 @@ export class LobbyComponent implements OnInit, OnDestroy{
   ScurrentGame$!: Subscription;
   Sgames$!: Subscription;
 
-  constructor(private fb: FormBuilder, private lobbyStore: LobbyStore, private localStore: LocalStoreService) {}
+  constructor(private fb: FormBuilder, private lobbyStore: LobbyStore, private localStore: LocalStoreService) {
+
+  }
 
   ngOnInit(): void {
     this.newRoomForm = this.initForm();
@@ -44,8 +47,13 @@ export class LobbyComponent implements OnInit, OnDestroy{
       (player) => {
         console.log(player)
         // If current player not set, retrieve from sessionStorage if available
-        if (!player.playerName && this.localStore.getCurrentPlayerName()) {
-          this.lobbyStore.setCurrentPlayer(this.newPlayer(this.localStore.getCurrentPlayerName()));
+        let currentPlayer = this.localStore.getCurrentPlayer();
+        if (!player.playerName && currentPlayer.playerId) {
+          this.lobbyStore.setCurrentPlayer({
+            playerName: currentPlayer.playerName, 
+            playerId: currentPlayer.playerId,
+            playerState: PlayerState.ALIVE
+          } as Player);
         }
       }
     )
@@ -64,10 +72,10 @@ export class LobbyComponent implements OnInit, OnDestroy{
     this.lobbyStore.createGame(gameName);
   }
 
-  setPlayer(name: string) {
-    console.log(name)
-    this.lobbyStore.setCurrentPlayer(this.newPlayer(name));
-    this.localStore.saveCurrentPlayerName(name);
+  setPlayer(playerName: string) {
+    let player = this.newPlayer(playerName) as Player;
+    this.lobbyStore.setCurrentPlayer(player);
+    this.localStore.saveCurrentPlayer(playerName, player.playerId);
   }
 
   initForm(): FormGroup {
@@ -77,9 +85,13 @@ export class LobbyComponent implements OnInit, OnDestroy{
     })
   }
 
-  newPlayer(name: string) {
-    return {playerName: name} as Player;
+// TODO: TEMPORARY INIT PLAYER
+  newPlayer(playerName: string): Player {
+  let id = uuid().substring(0,6).toUpperCase();
+  console.log("UUID ID: ", id)
+    return {playerName: playerName, playerId: id, playerState: PlayerState.ALIVE} as Player;
   }
+
   joinRoom(gameName: string) {
     console.log("Joining room: ", gameName)
     this.lobbyStore.joinGame(of(gameName));

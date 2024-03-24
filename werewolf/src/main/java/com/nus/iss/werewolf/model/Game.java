@@ -26,7 +26,7 @@ public class Game {
         this.gameName = name;
         this.players = players;
         this.gameState = gameState;
-        this.gameId = UUID.randomUUID().toString();
+        this.gameId = UUID.randomUUID().toString().substring(0,8).toUpperCase();
     }
 
     public JsonObject toJson() {

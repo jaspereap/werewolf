@@ -28,12 +28,14 @@
     <tr>
         <td>No.</td>
         <td>Player Name</td>
+        <td>Player ID</td>
         <td></td>
     </tr>
     <tr *ngFor="let p of currentGame.players; let i = index">
         <td>{{ i }}</td>
         <td>{{ p.playerName }}</td>
-        <td>{{p.playerState}}</td>
+        <td>{{ p.playerId }}</td>
+        <td>{{ p.playerState }}</td>
     </tr>
 </table>
 <br><br>

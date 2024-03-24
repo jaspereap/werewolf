@@ -25,15 +25,11 @@ public class GameFactory {
     GameService gameService;
 
     // Initialise game with one player (room creator)
-    public Game initGame(String gameName, String playerName) {
+    public Game initGame(String gameName, Player player) {
         // Mock Players
-        ArrayList<Player> players = new ArrayList<>(List.of(
-            // new Player("fred"),
-            // new Player("bob"),
-            // new Player("kate")
-            ));
+        ArrayList<Player> players = new ArrayList<>(List.of());
 
-        players.add(new Player(playerName));
+        players.add(player);
         
         Game game = new Game(gameName, players, GameState.CREATED);
         List<Phase> phases = initPhases(game);

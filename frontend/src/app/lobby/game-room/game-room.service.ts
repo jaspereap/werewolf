@@ -9,7 +9,7 @@ export class GameRoomService {
 
   constructor(private messageSvc: MessageService, private lobbyStore: LobbyStore, private router: Router) { }
   // Listen for player join/leave, game start
-  subscribeGameRoom(gameId: string, playerName: string) {
+  subscribeGameRoom(gameId: string, playerId: string) {
     return this.messageSvc.subscribe(gameId).subscribe(
         ({headers, body}) => {
 
@@ -36,7 +36,7 @@ export class GameRoomService {
               }
               case MessageType.INIT_GAME: {
                 console.log('Init_game GAME message received')
-                this.publishAck(gameId, playerName, MessageType.INIT_GAME)
+                this.publishAck(gameId, playerId, MessageType.INIT_GAME)
                 this.router.navigate(['/game', gameId])
                 break;
               }
@@ -49,7 +49,7 @@ export class GameRoomService {
   }
   
 
-  publishAck(gameName: string, playerName: string, type: MessageType) {
-    return this.messageSvc.publish(`${gameName}/${playerName}/ack`, playerName, type)
+  publishAck(gameId: string, playerId: string, type: MessageType) {
+    return this.messageSvc.publish(`${gameId}/${playerId}/ack`, playerId, type)
   }
 }

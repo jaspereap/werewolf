@@ -3,6 +3,7 @@
 <ng-container *ngIf="currentPlayer$ | async as currentPlayer">
     <div border="1" *ngIf="currentPlayer.playerName; else noCurrentPlayer">
         <p>You are {{currentPlayer.playerName }}.</p>
+        <p>Your ID is {{currentPlayer.playerId }}.</p>
     </div>
 </ng-container>
 

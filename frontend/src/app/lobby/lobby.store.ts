@@ -91,22 +91,22 @@ export class LobbyStore extends ComponentStore<LobbyState> {
   );
 
   // For Client-side persistence, rehydate currentPlayer and currentGame
-  readonly getCurrentGame = this.effect((trigger$: Observable<[string, string]>) => 
-    trigger$.pipe(
-      tap(() => console.log('getGame triggered')),
-      exhaustMap(([playerName, gameId]) => 
-        this.lobbyService.getCurrentGame(playerName, gameId).pipe(
-          tapResponse(
-            response => {
-              console.log('getGame Server Response: ', response);
-              this.setCurrentPlayer({playerName: playerName} as Player);
-              // this.setCurrentGame(response);
-            },
-            error => console.error(error)
-          )
-        )
-      )
-    ));
+  // readonly getCurrentGame = this.effect((trigger$: Observable<[string, string]>) => 
+  //   trigger$.pipe(
+  //     tap(() => console.log('getGame triggered')),
+  //     exhaustMap(([playerName, gameId]) => 
+  //       this.lobbyService.getCurrentGame(playerName, gameId).pipe(
+  //         tapResponse(
+  //           response => {
+  //             console.log('getGame Server Response: ', response);
+  //             this.setCurrentPlayer({playerName: playerName} as Player);
+  //             // this.setCurrentGame(response);
+  //           },
+  //           error => console.error(error)
+  //         )
+  //       )
+  //     )
+  //   ));
 // For creating a new game
   readonly createGame = this.effect((gameName$: Observable<string>) =>
     gameName$.pipe(
@@ -115,7 +115,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
         this.select(state => state.currentPlayer).pipe(
           take(1), // Take the current player state once to avoid repeating the operation
           exhaustMap(currentPlayer => 
-            this.lobbyService.createGame(currentPlayer.playerName, gameName).pipe(
+            this.lobbyService.createGame(currentPlayer.playerName, currentPlayer.playerId, gameName).pipe(
               tapResponse(
                 (game) => {
                   console.log("createGame Server Response: ", game);
@@ -124,7 +124,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
                   // Set current game to created game
                   this.setCurrentGame(game);
                   // Route to created game room
-                  this.enterRoom(game.gameId, currentPlayer.playerName)
+                  this.enterRoom(game.gameId, currentPlayer.playerId)
                 },
                 (error) => console.error(error)
               )
@@ -139,7 +139,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       withLatestFrom(this.currentPlayer$),
       tap(() => console.log('joinGame triggered')),
       exhaustMap(([gameId, currentPlayer]) => 
-      this.lobbyService.joinGame(currentPlayer.playerName, gameId).pipe(
+      this.lobbyService.joinGame(currentPlayer.playerName, currentPlayer.playerId, gameId).pipe(
         tapResponse(
           resp => {
             console.log('joinGame Server Response: ', resp);
@@ -159,7 +159,7 @@ export class LobbyStore extends ComponentStore<LobbyState> {
       tap(() => console.log('leaveGame triggered')),
       withLatestFrom(this.currentPlayer$, this.currentGame$),
       exhaustMap(([,currentPlayer, currentGame]) => 
-        this.lobbyService.leaveGame(currentPlayer.playerName, currentGame.gameId).pipe(
+        this.lobbyService.leaveGame(currentPlayer.playerName, currentPlayer.playerId, currentGame.gameId).pipe(
           tapResponse(
             resp => {
               console.log('leaveGame Server Response: ', resp);

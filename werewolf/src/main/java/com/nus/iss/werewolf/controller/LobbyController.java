@@ -43,9 +43,11 @@ public class LobbyController {
         System.out.println("Post Create Game Controller");
         System.out.println("\tCreated Game Name: " + request.getGameName());
         System.out.println("\tCreator Player Name: " + request.getPlayerName());
-
-        Game game = gameFactory.initGame(request.getGameName(), request.getPlayerName());
+        System.out.println("\tCreator Player ID: " + request.getPlayerId());
+        Player player = new Player(request.getPlayerName(), request.getPlayerId());
+        Game game = gameFactory.initGame(request.getGameName(), player);
         lobbySvc.createGame(game);
+        System.out.println("GAME: " + game);
         return ResponseEntity.ok(new GameDTO(game));
     }
 
@@ -70,11 +72,11 @@ public class LobbyController {
     @PostMapping(path = "/join/{gameId}")
     public ResponseEntity<String> postJoinGame(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Join Room");
-        System.out.println("\tGame Id: " + request.getGameId() + " Player Name: " + request.getPlayerName());
+        System.out.println("\tGame Id: " + request.getGameId() + " Player ID: " + request.getPlayerId() + " Player Name: " + request.getPlayerName());
         // TODO: Get player object
-        Player player = new Player(request.getPlayerName());
+        Player player = new Player(request.getPlayerName(), request.getPlayerId());
         PlayerDTO playerDTO = new PlayerDTO(player);
-        Optional<Game> joinedGame = lobbySvc.joinGame(gameId, request.getPlayerName());
+        Optional<Game> joinedGame = lobbySvc.joinGame(gameId, player);
         if (joinedGame.isEmpty()) {
             System.out.println("\tJOIN GAME FAILED!");
             return ResponseEntity.badRequest().body("{'message':'FAIL'}");
@@ -89,9 +91,9 @@ public class LobbyController {
     public ResponseEntity<String> postLeaveGame(@PathVariable String gameId, @RequestBody GameRequest request) {
         System.out.println("Post Leave Game Controller");
         // TODO: Get player object
-        Player player = new Player(request.getPlayerName());
+        Player player = new Player(request.getPlayerName(), request.getPlayerId());
         PlayerDTO playerDTO = new PlayerDTO(player);
-        if (!this.lobbySvc.leaveGame(gameId, request.getPlayerName())) {
+        if (!this.lobbySvc.leaveGame(gameId, player)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'message':'FAIL'}");
         }
         // Broadcast room leave
