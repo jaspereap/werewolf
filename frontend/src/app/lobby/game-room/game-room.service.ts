@@ -12,8 +12,6 @@ export class GameRoomService {
   subscribeGameRoom(gameName: string, playerName: string) {
     return this.messageSvc.subscribe(gameName).subscribe(
         ({headers, body}) => {
-          // Acknowledge to server
-            // this.publishACK(gameName, playerName)
 
             switch(headers['type'] as MessageType) {
               case MessageType.ACK: {
@@ -38,7 +36,9 @@ export class GameRoomService {
               }
               case MessageType.INIT_GAME: {
                 console.log('Init_game GAME message received')
+                this.publishAck(gameName, playerName, MessageType.INIT_GAME)
                 this.router.navigate(['/game', gameName])
+                break;
               }
             }
         }
@@ -48,8 +48,8 @@ export class GameRoomService {
 
   }
   
-  publishACK(gameName: string, playerName: string) {
-    const ackEndpoint = 'ack'
-    this.messageSvc.publish(`${gameName}/${ackEndpoint}`, playerName, MessageType.ACK);
+
+  publishAck(gameName: string, playerName: string, type: MessageType) {
+    return this.messageSvc.publish(`${gameName}/${playerName}/ack`, playerName, type)
   }
 }

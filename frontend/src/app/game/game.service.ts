@@ -39,7 +39,7 @@ export class GameService {
               }
               case MessageType.START_GAME: {
                 console.log('START_GAME GAME MESSAGE RECEIVED')
-                this.publishAck(gameName, playerName);
+                this.publishAck(gameName, playerName, MessageType.START_GAME);
                 break;
               }
             }
@@ -47,7 +47,7 @@ export class GameService {
     )
   }
 
-  publishAck(gameName: string, playerName: string) {
-    return this.messageSvc.publish(`${gameName}/${playerName}/ack`, playerName, MessageType.START_GAME)
+  publishAck(gameName: string, playerName: string, type: MessageType) {
+    return this.messageSvc.publish(`${gameName}/${playerName}/ack`, playerName, type)
   }
 }

@@ -40,12 +40,18 @@ public class GameController {
         return ResponseEntity.ok("{\"message\":\"SUCCESS\"}");
     }
 
+    // Acknowledges by GameName and MessageType
     @MessageMapping("/{gameName}/{playerName}/ack")
-    public void startGame(@DestinationVariable String gameName, @DestinationVariable String playerName, @Payload String body, SimpMessageHeaderAccessor header){
+    public void playerAck(@DestinationVariable String gameName, 
+        @DestinationVariable String playerName, 
+        @Payload String body, 
+        SimpMessageHeaderAccessor header) {
         System.out.printf("\tInbound Ack: \n\tgameName: %s \n\tplayerName: %s \n\tBody: %s\n", gameName, playerName, body);
         System.out.println("\tInbound Headers: " + header.getFirstNativeHeader("type"));
-        if (ackService.hasGame(gameName)) {
-            ackService.acknowledgePlayer(gameName, playerName);
+        String type = header.getFirstNativeHeader("type");
+
+        if (ackService.hasGame(gameName, type)) {
+            ackService.acknowledgePlayer(gameName, type);
         } else {
             System.out.println("Game does not exist in AckService");
         }
