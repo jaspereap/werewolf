@@ -1,5 +1,9 @@
 <h1>Game Room</h1>
 <button (click)="leaveGame()">Leave</button>
+<ng-container *ngIf="currentPlayer$ | async as player">
+    <h4>You are {{ player.playerName }}</h4>
+    <h4>Your player ID is {{ player.playerId }}</h4>
+</ng-container>
 <h3>Game Details</h3>
 <div *ngIf="currentGame$ | async as currentGame">
 <div>

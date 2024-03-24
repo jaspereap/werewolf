@@ -82,7 +82,7 @@ public class LobbyController {
             return ResponseEntity.badRequest().body("{'message':'FAIL'}");
         }
         // Broadcast room join
-        System.out.println(playerDTO.toString());
+        System.out.println("\tOutbound PlayerDTO: " + playerDTO.toString());
         msgSvc.publishToGame(gameId, playerDTO.toJson().toString(), MessageType.PLAYER_JOINED);
         return ResponseEntity.ok(new GameDTO(joinedGame.get()).toJson().toString());
     }

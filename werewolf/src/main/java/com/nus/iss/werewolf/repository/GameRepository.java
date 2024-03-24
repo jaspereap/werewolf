@@ -25,5 +25,14 @@ public class GameRepository {
             .filter(game -> game.getGameId().equals(gameId))
             .findFirst();
     }
+    public boolean removePlayerFromGame(String gameId, String playerId) {
+        for (Game game : getGames()) {
+            if (game.getGameId().equals(gameId)) {
+                game.getPlayers().removeIf(player -> player.getPlayerId().equals(playerId));
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

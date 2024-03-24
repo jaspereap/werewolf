@@ -56,20 +56,7 @@ public class LobbyService {
     // }
     
     public boolean leaveGame(String gameId, Player player) {
-        for (Game game : gameRepo.getGames()) {
-            if (game.getGameId().equals(gameId)) {
-                boolean exists = game.getPlayers().stream().anyMatch(currentPlayer -> currentPlayer.getPlayerId().equals(player.getPlayerId()));
-                if (exists) {
-                    game.getPlayers().removeIf(currentPlayer -> currentPlayer.getPlayerName().equals(player.getPlayerId()));
-                    return true;
-                } else {
-                    System.out.println("Player " + player + " not found in game " + gameId);
-                    return false;
-                }
-            }
-        }
-        System.out.println("Game " + gameId + " not found");
-        return false;
+        return gameRepo.removePlayerFromGame(gameId, player.getPlayerId());
     }
 
     private boolean addPlayer(Game game, Player player) {
